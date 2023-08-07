@@ -2,20 +2,16 @@ package ru.mikehalko.kbju.test;
 
 import ru.mikehalko.kbju.controller.MealController;
 import ru.mikehalko.kbju.model.Meal;
-import ru.mikehalko.kbju.repository.MealRepository;
-import ru.mikehalko.kbju.repository.fake.FakeMealRepository;
 import ru.mikehalko.kbju.service.MealService;
 import ru.mikehalko.kbju.to.MealTo;
 import ru.mikehalko.kbju.util.SecurityUtil;
-import ru.mikehalko.kbju.util.fake.FakeAuthUser;
 import ru.mikehalko.kbju.util.fake.FakeManager;
-import ru.mikehalko.kbju.util.fake.FakeBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class Test {
-    private static final FakeManager fakeManage;
+    private static final FakeManager fm;
     private static final Meal MEAL_1;
     private static final int ID = 101;
 
@@ -23,21 +19,22 @@ public class Test {
     private static final int MEALS_PER_DAY = 3;
 
     static {
-        FakeBuilder fakeBuilder = new FakeBuilder();
-        fakeManage = new FakeManager(new FakeMealRepository(fakeBuilder));
-        fakeManage.setNumberOfDays(DAYS);
-        fakeManage.setMealsPerDay(MEALS_PER_DAY);
-        
-        MEAL_1 = fakeBuilder.getMeal(777, FakeAuthUser.user(), LocalDateTime.now(), 
-                600, "meal 1", fakeBuilder.getNutritionally(100, 200, 300));
+        fm = new FakeManager();
+        SecurityUtil.setUser(fm.getFakeAuthUser());
+        fm.setUserOwnerMeals(SecurityUtil.getUser());
+        fm.resetRepository();
+        fm.setNumberOfDays(DAYS);
+        fm.setMealsPerDay(MEALS_PER_DAY);
+
+        // meal_id == 0 -> meal is new
+        MEAL_1 = fm.fakeBuilder().meal(0, SecurityUtil.getUser(), LocalDateTime.now(),
+                600, "meal 1", fm.fakeBuilder().nutritionally(100, 200, 300));
     }
 
-    static MealRepository repository = fakeManage.getRepository();
-    static MealService service = new MealService(repository);
-    static MealController controller = new MealController(service);
+    static MealController controller = new MealController(new MealService(fm.getRepository()));
 
     public static void main(String[] args) {
-        // визуальный тест
+        // простейший грубый визуальный тест
         get(true);
 
         create(true);
@@ -84,7 +81,7 @@ public class Test {
         start("UPDATE", reset);
         print("update id="+id);
 
-        Meal meal = fakeManage.getFakeBuilder().copyMeal(id, MEAL_1);
+        Meal meal = fm.fakeBuilder().copyMeal(id, MEAL_1);
         print("with " + meal);
         controller.update(meal, id);
         print("after:");
@@ -106,7 +103,7 @@ public class Test {
     private static void start(String message, boolean reset) {
         print("\n\n=================== START ===================");
         print(message);
-        if (reset) fakeManage.resetRepository();
+        if (reset) fm.resetRepository();
         print("before:");
         printContent();
     }
@@ -118,7 +115,7 @@ public class Test {
 
     private static void printContent() {
         print("------------------ content ------------------");
-        print(fakeManage.getTextContentRepository());
+        print(fm.getContentRepositoryInText());
         print("---------------- content-end ----------------");
         print("---------------------------------------------");
     }

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class FakeUserRepository implements UserRepository {
     private static List<User> users = new LinkedList<>();
-    private static User USER = SecurityUtil.user();
+    private static User USER = SecurityUtil.getUser();
 
     public User save(User user) {
         users.add(user);

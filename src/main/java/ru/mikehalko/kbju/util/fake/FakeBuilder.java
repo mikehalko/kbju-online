@@ -9,19 +9,18 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 public class FakeBuilder {
-
-    public Meal randomMeal(LocalDateTime dateTime, Random random) {
+    public Meal randomMeal(User owner, LocalDateTime dateTime, Random random) {
         int multiplier = 2 + random.nextInt(15);
         int proteins = random.nextInt(5 * multiplier);
         int fats = random.nextInt(10 * multiplier);
         int carbohydrates = random.nextInt(30 * multiplier);
         int mass = (proteins + fats + carbohydrates) * (1 + random.nextInt(2));
-        Nutritionally nutritionally = getNutritionally(proteins, fats, carbohydrates);
+        Nutritionally nutritionally = nutritionally(proteins, fats, carbohydrates);
 
-        return getMeal(FakeAuthUser.user(), dateTime, mass, "random food", nutritionally);
+        return meal(owner, dateTime, mass, "random food", nutritionally);
     }
 
-    public Meal getMeal(User user, LocalDateTime dateTime, int mass, String descr, Nutritionally nutritionally) {
+    public Meal meal(User user, LocalDateTime dateTime, int mass, String descr, Nutritionally nutritionally) {
         Meal meal = new Meal();
         meal.setDateTime(dateTime);
         meal.setUser(user);
@@ -32,8 +31,8 @@ public class FakeBuilder {
         return meal;
     }
 
-    public Meal getMeal(int id, User user, LocalDateTime dateTime, int mass, String descr, Nutritionally nut) {
-        Meal meal = getMeal(user, dateTime, mass, descr, nut);
+    public Meal meal(int id, User user, LocalDateTime dateTime, int mass, String descr, Nutritionally nut) {
+        Meal meal = meal(user, dateTime, mass, descr, nut);
         meal.setId(id);
         return meal;
     }
@@ -50,11 +49,7 @@ public class FakeBuilder {
         return mealCopy;
     }
 
-    public Meal copyMeal(Meal meal) {
-        return copyMeal(meal);
-    }
-
-    public Nutritionally getNutritionally(int proteins, int fats, int carbohydrates) {
+    public Nutritionally nutritionally(int proteins, int fats, int carbohydrates) {
         Nutritionally nutritionally = new Nutritionally();
         nutritionally.setProteins(proteins);
         nutritionally.setFats(fats);

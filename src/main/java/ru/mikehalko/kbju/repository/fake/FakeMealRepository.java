@@ -1,36 +1,44 @@
 package ru.mikehalko.kbju.repository.fake;
 
 import ru.mikehalko.kbju.model.Meal;
+import ru.mikehalko.kbju.model.User;
 import ru.mikehalko.kbju.repository.MealRepository;
-import ru.mikehalko.kbju.util.SecurityUtil;
 import ru.mikehalko.kbju.util.fake.FakeBuilder;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class FakeMealRepository implements MealRepository {
+    private static final int DEFAULT_ID_COUNTER_VALUE = 100;
+    private final AtomicInteger nextIdCounter = new AtomicInteger(DEFAULT_ID_COUNTER_VALUE);
 
     private int days = 6;
     private int mealsPerDay = 3;
+    private User initUser;
 
-    private List<Meal> meals;
-    private FakeBuilder mealBuilder;
+    // TODO: no thread safe!
+    private final List<Meal> meals;
+    private final FakeBuilder mealBuilder;
 
-    private int nextIdCounter = 100;
 
     public FakeMealRepository(FakeBuilder mealBuilder) {
         this.mealBuilder = mealBuilder;
         meals = new ArrayList<>();
-        init();
     }
 
     public Meal save(Meal meal, int userId) {
-        if (delete(meal.getId(), userId)) { // update
+        if (meal.isNew()) { // save
+            meal.setId(nextIdCounter.getAndIncrement());
             meals.add(meal);
-        } else {
-            meal.setId(nextId());
-            meals.add(meal);
+        }
+        else { // update
+            if (delete(meal.getId(), userId)) {
+                meals.add(meal);
+            } else {
+                throw new RuntimeException("meal update: id does not exist OR userId is not the owner");
+            }
         }
         return meal;
     }
@@ -50,18 +58,15 @@ public class FakeMealRepository implements MealRepository {
                 return result;
             else
                 throw new RuntimeException("userId didn't match");
-        }
-        else
+        } else
             throw  new RuntimeException("the meal does not exist");
     }
 
     public List<Meal> getAll(int userId) {
-        List<Meal> mealsResult = meals.stream()
+        return meals.stream()
                 .filter(meal -> meal.getUser().getId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-
-        return mealsResult;
     }
 
     public FakeBuilder getMealBuilder() {
@@ -73,7 +78,7 @@ public class FakeMealRepository implements MealRepository {
         Random random = new Random(24); // обеспечить те же данные, при условии, что random никем не используется
         for (int i = 0; i < days; i++) {
             for (int j = 0; j < mealsPerDay; j++) {
-                save(mealBuilder.randomMeal(LocalDateTime.now().minusDays(i), random), SecurityUtil.authId());
+                save(mealBuilder.randomMeal(initUser, LocalDateTime.now().minusDays(i), random), initUser.getId());
             }
         }
     }
@@ -92,6 +97,10 @@ public class FakeMealRepository implements MealRepository {
         return builder.toString();
     }
 
+    public void setRepositoryInitUserOwner(User initUser) {
+        this.initUser = initUser;
+    }
+
     public void setDays(int days) {
         this.days = days;
     }
@@ -100,11 +109,7 @@ public class FakeMealRepository implements MealRepository {
         this.mealsPerDay = mealsPerDay;
     }
 
-    private int nextId() {
-        return nextIdCounter++;
-    }
-
     private void resetIdCounter() {
-        this.nextIdCounter = 100;
+        this.nextIdCounter.set(DEFAULT_ID_COUNTER_VALUE);
     }
 }

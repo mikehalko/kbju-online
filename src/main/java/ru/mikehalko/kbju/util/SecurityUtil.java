@@ -2,22 +2,27 @@ package ru.mikehalko.kbju.util;
 
 import ru.mikehalko.kbju.model.User;
 import ru.mikehalko.kbju.model.Nutritionally;
-import ru.mikehalko.kbju.util.fake.FakeAuthUser;
 
 public class SecurityUtil {
+    private static User user;
+
     public static int authId() {
-        return FakeAuthUser.id();
+        return user.getId();
     }
 
     public static int authCaloriesPerDay() {
-        return FakeAuthUser.caloriesPerDay();
+        return user.getNutritionallyNorm().getCalories();
     }
 
     public static Nutritionally nutritionalValue() {
-        return FakeAuthUser.nutritionalValue();
+        return user.getNutritionally();
     }
 
-    public static User user() {
-        return FakeAuthUser.user();
+    public static User getUser() {
+        return user;
+    }
+
+    public static void setUser(User user) {
+        SecurityUtil.user = user;
     }
 }

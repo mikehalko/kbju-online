@@ -81,6 +81,10 @@ public class Meal {
         return dateTime.toLocalTime();
     }
 
+    public boolean isNew() {
+        return id == 0;
+    }
+
     public String toString() {
         return String.format("MEAL [%3d] by user \"%s\" %s, || %s   %4d g  \"%s\"", id, user,
                 dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), nutritionally, mass, description);

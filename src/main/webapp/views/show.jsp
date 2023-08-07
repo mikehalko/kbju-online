@@ -19,7 +19,6 @@
     <p>Жиры: ${meal.fats}</p>
     <p>Углеводы: ${meal.carbohydrates}</p>
     <p>Калории: ${meal.calories}</p>
-    <p>* "0" - подсчитает на основе БЖУ</p>
     <a href="meals?action=update&id=${meal.id}"><button>Править</button></a>
     <a href="meals?action=delete&id=${meal.id}"><button>Удалить</button></a>
 </section>
