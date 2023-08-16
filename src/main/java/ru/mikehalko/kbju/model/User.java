@@ -1,11 +1,30 @@
 package ru.mikehalko.kbju.model;
 
+import ru.mikehalko.kbju.model.meal.Meal;
+import ru.mikehalko.kbju.model.meal.Nutritionally;
+
 import java.util.List;
 
 public class User {
     private int id;
     private Nutritionally nutritionally; // norm per day
     private String name;
+
+    public User() {
+    }
+
+    public User(int id, Nutritionally nutritionally, String name) {
+        this.id = id;
+        this.nutritionally = nutritionally;
+        this.name = name;
+    }
+
+    public User(int id, Nutritionally nutritionally, String name, List<Meal> meals) {
+        this.id = id;
+        this.nutritionally = nutritionally;
+        this.name = name;
+        this.meals = meals;
+    }
 
     public int getId() {
         return id;
@@ -15,14 +34,6 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Nutritionally getNutritionallyNorm() {
-        return nutritionally;
-    }
-
-    public void setNutritionallyNorm(Nutritionally nutritionally) {
-        this.nutritionally = nutritionally;
     }
 
     public Nutritionally getNutritionally() {
@@ -51,5 +62,9 @@ public class User {
 
     public String toString() {
         return String.format("USER[%3d]", id);
+    }
+
+    public boolean isNew() {
+        return id == 0;
     }
 }

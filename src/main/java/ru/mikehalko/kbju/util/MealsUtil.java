@@ -1,7 +1,7 @@
 package ru.mikehalko.kbju.util;
 
-import ru.mikehalko.kbju.model.Meal;
-import ru.mikehalko.kbju.model.Nutritionally;
+import ru.mikehalko.kbju.model.meal.Meal;
+import ru.mikehalko.kbju.model.meal.Nutritionally;
 import ru.mikehalko.kbju.to.MealTo;
 
 import java.time.LocalDate;
@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
+
     public static List<MealTo> getTos(List<Meal> meals, Nutritionally nutritionallyPerDay) {
         return filtered(meals, LocalTime.MIN, LocalTime.MAX, nutritionallyPerDay.getCalories());
     }
@@ -39,5 +40,23 @@ public class MealsUtil {
 
     public static int calculateCalories (int proteins, int fats, int carbohydrates) {
         return proteins * 4  + fats * 9 + carbohydrates * 4;
+    }
+
+    public static Meal clone(Meal meal) {
+        Meal clone = new Meal(meal.getId(), meal.getUser(), meal.getDateTime(), meal.getMass(),  meal.getDescription(),
+                new Nutritionally(meal.getNutritionally().getProteins(),
+                        meal.getNutritionally().getFats(),
+                       meal.getNutritionally().getCarbohydrates(),
+                        meal.getNutritionally().getCalories()));
+
+        return clone;
+    }
+
+    public static Meal[] clone(Meal... meals) {
+        Meal[] cloneMeals = new Meal[meals.length];
+        for (int i = 0; i < cloneMeals.length; i++) {
+            cloneMeals[i] = clone(meals[i]);
+        }
+        return cloneMeals;
     }
 }

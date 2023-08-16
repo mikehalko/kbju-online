@@ -1,6 +1,6 @@
 package ru.mikehalko.kbju.repository;
 
-import ru.mikehalko.kbju.model.Meal;
+import ru.mikehalko.kbju.model.meal.Meal;
 
 import java.util.List;
 

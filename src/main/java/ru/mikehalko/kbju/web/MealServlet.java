@@ -1,14 +1,13 @@
 package ru.mikehalko.kbju.web;
 
 
-import ru.mikehalko.kbju.model.Meal;
-import ru.mikehalko.kbju.model.Nutritionally;
+import ru.mikehalko.kbju.model.meal.Meal;
+import ru.mikehalko.kbju.model.meal.Nutritionally;
 import ru.mikehalko.kbju.model.User;
 import ru.mikehalko.kbju.repository.MealRepository;
 import ru.mikehalko.kbju.to.MealTo;
 import ru.mikehalko.kbju.util.MealsUtil;
 import ru.mikehalko.kbju.util.SecurityUtil;
-import ru.mikehalko.kbju.util.fake.FakeManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,17 +28,9 @@ public class MealServlet extends HttpServlet {
 
     private static MealRepository repository;
 
-    private static final int DAYS = 3;
-    private static final int MEALS_PER_DAY = 3;
-
     @Override
     public void init() throws ServletException {
-        FakeManager fm = new FakeManager();
-        SecurityUtil.setUser(fm.getFakeAuthUser());
-        fm.initRepository();
-        fm.setNumberOfDays(DAYS);
-        fm.setMealsPerDay(MEALS_PER_DAY);
-        repository = fm.getRepository();
+        repository = null; // TODO
     }
 
     @Override

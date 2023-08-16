@@ -1,4 +1,6 @@
-package ru.mikehalko.kbju.model;
+package ru.mikehalko.kbju.model.meal;
+
+import java.util.Objects;
 
 public class Nutritionally {
     private int proteins;
@@ -7,6 +9,7 @@ public class Nutritionally {
     private int calories;
 
     public Nutritionally() {
+
     }
 
     public Nutritionally(int proteins, int fats, int carbohydrates, int calories) {
@@ -50,5 +53,18 @@ public class Nutritionally {
 
     public String toString() {
         return String.format("{ %4d | %4d | %4d | %4d }", proteins, fats, carbohydrates, calories);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Nutritionally that = (Nutritionally) o;
+        return proteins == that.proteins && fats == that.fats && carbohydrates == that.carbohydrates && calories == that.calories;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(proteins, fats, carbohydrates, calories);
     }
 }

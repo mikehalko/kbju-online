@@ -23,7 +23,7 @@
     <c:set var="user" value="${requestScope.user}"/>
     <jsp:useBean id="user" type="ru.mikehalko.kbju.model.User"/>
     <nobr>ИМЯ ПОЛЬЗОВАТЕЛЯ: <p style="font-size: large; color: deepskyblue">${user.name}</p></nobr>
-    <nobr>НОРМА КАЛОРИЙ: <p style="font-size: large; color: red">${user.nutritionallyNorm.calories}</p></nobr>
+    <nobr>НОРМА КАЛОРИЙ: <p style="font-size: large; color: red">${user.nutritionally.calories}</p></nobr>
     <h4><a href="../meals?action=create"><button>Новый приём пищи</button></a></h4>
 </section>
 <hr>

@@ -2,7 +2,7 @@ package ru.mikehalko.kbju.controller;
 
 
 import ru.mikehalko.kbju.service.MealService;
-import ru.mikehalko.kbju.model.Meal;
+import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.to.MealTo;
 import ru.mikehalko.kbju.util.*;
 
