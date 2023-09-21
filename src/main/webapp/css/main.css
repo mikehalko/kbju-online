@@ -1,0 +1,85 @@
+* {
+    font-size: 1.1em;
+    letter-spacing: 1px;
+    font-family: "Space Mono", monospace;
+}
+
+body {
+    background: linear-gradient(0deg, #000000 0%, #737373 100%);
+}
+
+hr {
+    border: 3px solid #353535;
+    border-radius: 3px;
+}
+
+input:not(button) {
+    border: 2px solid black;
+    border-radius: 6px;
+    background: #333;
+    color: cadetblue;
+    box-shadow: 3px 5px 14px 0px #000000;
+}
+
+button {
+    background-size: 0;
+    color: black;
+    background: #8e8e8e;
+    box-shadow: 1px 1px #353535;
+}
+
+button:hover, button:active {
+    background: rgb(114, 0, 114);
+}
+
+button:active {
+    position: relative;
+    top: 6px;
+    box-shadow: none;
+}
+
+.href, .href_opened {
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    padding: 4px 10px;
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 3px;
+    box-shadow: 2px 6px #353535;
+    background: #8e8e8e;
+}
+.href:hover, .href:active, .href_opened {
+    background: rgb(114, 0, 114);
+}
+.href:active, .href_opened {
+    position: relative;
+    top: 6px;
+    box-shadow: 1px 2px #353535;
+}
+
+
+
+
+.form {
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-bottom: 1em;
+    align-items: center;
+}
+
+
+label {
+    font-family: Verdana, serif;
+    background: #8e8e8e;
+    border-radius: 0px;
+    padding: 1px 1px;
+    color: black;
+}
+
+label.label_form {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 4em;
+    margin-bottom: 10px;
+}

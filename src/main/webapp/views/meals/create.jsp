@@ -2,13 +2,14 @@
 <html>
 <head>
     <title>Create meal</title>
+  <link rel="stylesheet" href="../../css/main.css">
 </head>
 <body>
-<h3><a href="../index.html">Главная</a> | <a href="../meals">Список приёмов пищи</a> | Внести новую запись приёма пищи</h3>
+<h3><a href="../../index.html">Главная</a> | <a href="../meals">Список приёмов пищи</a> | <a class="href_opened">Внести новую запись приёма пищи</a></h3>
 
 <section>
   <hr>
-  <form method="post" action="meals">
+  <form method="post" action="">
     <input type="hidden" name="id">
     <dl>
       <dt>Дата и время:</dt>

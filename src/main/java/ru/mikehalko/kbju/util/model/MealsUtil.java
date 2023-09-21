@@ -1,10 +1,13 @@
-package ru.mikehalko.kbju.util;
+package ru.mikehalko.kbju.util.model;
 
 import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.model.meal.Nutritionally;
+import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.to.MealTo;
+import ru.mikehalko.kbju.util.DateTimeUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +15,19 @@ import java.util.stream.Collectors;
 
 public class MealsUtil {
 
-    public static List<MealTo> getTos(List<Meal> meals, Nutritionally nutritionallyPerDay) {
-        return filtered(meals, LocalTime.MIN, LocalTime.MAX, nutritionallyPerDay.getCalories());
+    public static Meal createMeal(int id, User user, LocalDateTime dateTime, int mass, String description,
+                                  int proteins, int fats, int carbohydrates, int calories) {
+        if (calories == 0) calories = calculateCalories(proteins, fats, carbohydrates);
+        Nutritionally nutritionally = new Nutritionally(proteins, fats, carbohydrates, calories);
+        return new Meal(id, user, dateTime, mass, description, nutritionally);
     }
 
-    
-    public static List<MealTo> filtered(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<MealTo> getTos(List<Meal> meals, int calories_min, int calories_max) {
+        return filtered(meals, LocalTime.MIN, LocalTime.MAX, calories_min, calories_max);
+    }
+
+    public static List<MealTo> filtered(List<Meal> meals, LocalTime startTime, LocalTime endTime,
+                                        int caloriesMinPerDay, int caloriesMaxPerDay) {
         // map с суммой калорий по дням
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(Collectors.groupingBy(Meal::getDate,
@@ -26,16 +36,19 @@ public class MealsUtil {
 
         return meals.stream()
                 .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
-                .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
+                .map(meal -> createTo(meal,
+                        caloriesSumByDate.get(meal.getDate()) < caloriesMinPerDay,
+                        caloriesSumByDate.get(meal.getDate()) > caloriesMaxPerDay))
+                .sorted(MealsUtil::sortOrderByDateTimeDesc)
                 .collect(Collectors.toList());
     }
 
-    private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal, excess);
+    private static MealTo createTo(Meal meal, boolean shortage, boolean excess) {
+        return new MealTo(meal, shortage, excess);
     }
 
     public static MealTo getTo(Meal meal) {
-        return createTo(meal, false);
+        return createTo(meal, false, false);
     }
 
     public static int calculateCalories (int proteins, int fats, int carbohydrates) {
@@ -58,5 +71,9 @@ public class MealsUtil {
             cloneMeals[i] = clone(meals[i]);
         }
         return cloneMeals;
+    }
+
+    public static int sortOrderByDateTimeDesc(MealTo m1, MealTo m2) {
+        return m1.getDateTime().compareTo(m2.getDateTime()) * -1;
     }
 }

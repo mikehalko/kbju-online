@@ -1,6 +1,6 @@
 package ru.mikehalko.kbju.service;
 
-import ru.mikehalko.kbju.model.User;
+import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.UserRepository;
 
 import java.util.List;
@@ -8,9 +8,17 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository repository;
+    private static UserService instance;
 
-    public UserService(UserRepository repository) {
+    private UserService(UserRepository repository) {
         this.repository = repository;
+    }
+
+    public static synchronized UserService getInstance(UserRepository repository) {
+        if (instance == null) {
+            instance = new UserService(repository);
+        }
+        return instance;
     }
 
     public User create(User user) {

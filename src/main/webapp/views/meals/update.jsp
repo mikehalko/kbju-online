@@ -4,15 +4,16 @@
 <html>
 <head>
     <title>Update meal</title>
+  <link rel="stylesheet" href="../../css/main.css">
 </head>
 <body>
 <jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo" scope="request"/>
-<h3><a href="../index.html">Главная</a> | <a href="../meals">Список приёмов пищи</a> | <a href="meals?action=get&id=${meal.id}">Приём пищи</a> | Править</h3>
+<h3><a class="href" href="../../index.html">Главная</a> | <a class="href" href="../meals">Список приёмов пищи</a> | <a class="href" href="?action=get&id=${meal.id}">Приём пищи</a> | <a class="href_opened">Править</a></h3>
 <hr>
 
 <section>
   <%--    `meal.new` cause javax.el.ELException - bug tomcat --%>
-  <form method="post" action="meals">
+  <form method="post" action="">
     <input type="hidden" name="id" value="${meal.id}">
       <p>Дата и время:<input type="datetime-local" value="<%=DateTimeUtil.toString(meal.getDateTime())%>" name="dateTime" required></p>
       <p>Описание: <input type="text" size=40 value="${meal.description}" name="description" required></p>

@@ -1,9 +1,9 @@
 package ru.mikehalko.kbju.inmemory;
 
-import ru.mikehalko.kbju.model.User;
+import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.repository.MealRepository;
-import ru.mikehalko.kbju.util.SecurityUtil;
+import ru.mikehalko.kbju.util.security.SecurityUtil;
 
 import static ru.mikehalko.kbju.inmemory.InMemoryExceptions.*;
 

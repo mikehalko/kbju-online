@@ -3,12 +3,14 @@ package ru.mikehalko.kbju.web;
 
 import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.model.meal.Nutritionally;
-import ru.mikehalko.kbju.model.User;
+import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.MealRepository;
+import ru.mikehalko.kbju.repository.sql.MealRepositorySQL;
 import ru.mikehalko.kbju.to.MealTo;
-import ru.mikehalko.kbju.util.MealsUtil;
-import ru.mikehalko.kbju.util.SecurityUtil;
+import ru.mikehalko.kbju.util.model.MealsUtil;
+import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,95 +24,130 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static ru.mikehalko.kbju.util.model.MealsUtil.createMeal;
 
 public class MealServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+    public static final String ATTRIBUTE_USER = "user";
+    public static final String ATTRIBUTE_MEAL = "meal";
+    public static final String ATTRIBUTE_MEALS_LIST = "list";
 
+
+    public static final String PARAM_ACTION = "action";
+    public static final String PARAM_ACTION_GET = "get";
+    public static final String PARAM_ACTION_UPDATE = "update";
+    public static final String PARAM_ACTION_CREATE = "create";
+    public static final String PARAM_ACTION_DELETE = "delete";
+
+    public static final String PARAM_ID = "id";
+    public static final String PARAM_DATE_TIME = "dateTime";
+    public static final String PARAM_DESCRIPTION = "description";
+    public static final String PARAM_MASS = "mass";
+    public static final String PARAM_PROTEINS = "proteins";
+    public static final String PARAM_FATS = "fats";
+    public static final String PARAM_CARBOHYDRATES = "carbohydrates";
+    public static final String PARAM_CALORIES = "calories";
+
+    public static final String GET_FORWARD_SHOW = "views/meals/show.jsp";
+    public static final String GET_FORWARD_UPDATE = "views/meals/update.jsp";
+    public static final String GET_FORWARD_CREATE = "views/meals/create.jsp";
+    public static final String GET_FORWARD_GET_ALL = "views/meals/meals.jsp";
+    public static final String GET_REDIRECT_AFTER_DELETE = "meals";
+    public static final String POST_REDIRECT_AFTER_CREATE_MEAL_ACTION_GET_ID = "meals?action=get&id=";
+
+
+    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
     private static MealRepository repository;
 
     @Override
-    public void init() throws ServletException {
-        repository = null; // TODO
+    public void init(ServletConfig config) throws ServletException {
+        repository = MealRepositorySQL.getInstance();
+        super.init(config);
     }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("doGet");
-        request.setAttribute("user", SecurityUtil.getUser());
-        String action = request.getParameter("action");
+        request.setAttribute(ATTRIBUTE_USER, ServletSecurityUtil.getUserSession(request));
+
+        String action = request.getParameter(PARAM_ACTION);
         if (action == null) action = "";
         int id;
         MealTo meal;
         switch (action) {
-            case "get":
-                id = getIdSafe(request);
+            case PARAM_ACTION_GET:
+                id = parseIntSafe(request, PARAM_ID);
                 log.debug("get id={}", id);
-                meal = MealsUtil.getTo(repository.get(id, SecurityUtil.authId()));
-                request.setAttribute("meal", meal);
-                request.getRequestDispatcher("views/show.jsp").forward(request, response);
+                meal = MealsUtil.getTo(repository.get(id, ServletSecurityUtil.authId(request)));
+                request.setAttribute(ATTRIBUTE_MEAL, meal);
+                request.getRequestDispatcher(GET_FORWARD_SHOW).forward(request, response);
                 break;
-            case "update":
-                id = getIdSafe(request);
+            case PARAM_ACTION_UPDATE:
+                id = parseIntSafe(request, PARAM_ID);
                 log.debug("prepare update id={}", id);
-                meal = MealsUtil.getTo(repository.get(id, SecurityUtil.authId()));
-                request.setAttribute("meal", meal);
-                request.getRequestDispatcher("views/update.jsp").forward(request, response);
+                meal = MealsUtil.getTo(repository.get(id, ServletSecurityUtil.authId(request)));
+                request.setAttribute(ATTRIBUTE_MEAL, meal);
+                request.getRequestDispatcher(GET_FORWARD_UPDATE).forward(request, response);
                 break;
-            case "create":
+            case PARAM_ACTION_CREATE:
                 log.debug("create forward");
-                request.getRequestDispatcher("views/create.jsp").forward(request, response);
+                request.getRequestDispatcher(GET_FORWARD_CREATE).forward(request, response);
                 break;
-            case "delete":
-                id = getIdSafe(request);
+            case PARAM_ACTION_DELETE:
+                id = parseIntSafe(request, PARAM_ID);
                 log.debug("delete id={}", id);
-                repository.delete(id, SecurityUtil.authId());
-                response.sendRedirect("meals");
+                repository.delete(id, ServletSecurityUtil.authId(request));
+                response.sendRedirect(GET_REDIRECT_AFTER_DELETE);
                 break;
             default:
                 log.debug("get-all (default)");
                 List<MealTo> result =
-                        MealsUtil.getTos(repository.getAll(SecurityUtil.authId()), SecurityUtil.nutritionalValue());
-                request.setAttribute("list", result);
-                request.getRequestDispatcher("views/meals.jsp").forward(request, response);
+                        MealsUtil.getTos(repository.getAll(ServletSecurityUtil.authId(request)),
+                                ServletSecurityUtil.caloriesMin(request), ServletSecurityUtil.caloriesMax(request));
+                request.setAttribute(ATTRIBUTE_MEALS_LIST, result);
+                request.getRequestDispatcher(GET_FORWARD_GET_ALL).forward(request, response);
                 break;
         }
-
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("doPost");
         request.setCharacterEncoding("UTF-8");
 
-        Meal meal = createMeal(request, SecurityUtil.getUser());
+        Meal meal = parseMeal(request, ServletSecurityUtil.getUserSession(request));
 
         log.debug(meal.isNew() ? "save {}" : "create {}", meal);
-        repository.save(meal, SecurityUtil.authId());
+        repository.save(meal, ServletSecurityUtil.authId(request));
 
-        response.sendRedirect("meals?action=get&id=" + meal.getId());
+        response.sendRedirect(POST_REDIRECT_AFTER_CREATE_MEAL_ACTION_GET_ID + meal.getId());
     }
 
-    public static int getIdSafe(HttpServletRequest request) {
-        String id = Objects.requireNonNull(request.getParameter("id"));
-        return id.isEmpty() ? 0 :  Integer.parseInt(id);
+    public static int parseIntSafe(HttpServletRequest request, String param) {
+        String id = Objects.requireNonNull(request.getParameter(param)); // TODO неверно
+        return id.isEmpty() ? 0 : Integer.parseInt(id);
+    } // TODO убрать эти методы отсюда
+
+    public static String parseStringSafe(HttpServletRequest request, String param) {
+        return Objects.requireNonNull(request.getParameter(param));
     }
 
-    private static Meal createMeal(HttpServletRequest request, User user) {
-        int id = getIdSafe(request);
-        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
-        String description = request.getParameter("description");
-        int mass = Integer.parseInt(request.getParameter("mass"));
-        int proteins = Integer.parseInt(request.getParameter("proteins"));
-        int fats = Integer.parseInt(request.getParameter("fats"));
-        int carbohydrates = Integer.parseInt(request.getParameter("carbohydrates"));
-        int calories = Integer.parseInt(request.getParameter("calories"));
+    public static LocalDateTime parseLocalDateTimeSafe(HttpServletRequest request, String param) {
+        String dateTime = Objects.requireNonNull(request.getParameter(param));
+        return dateTime.isEmpty() ? LocalDateTime.now() : LocalDateTime.parse(dateTime); // not safe
+    }
+
+    private static Meal parseMeal(HttpServletRequest request, User user) {
+        int id = parseIntSafe(request, PARAM_ID);
+        LocalDateTime dateTime = parseLocalDateTimeSafe(request ,PARAM_DATE_TIME);
+        String description = parseStringSafe(request,PARAM_DESCRIPTION);
+        int mass = parseIntSafe(request, PARAM_MASS);
+        int proteins = parseIntSafe(request, PARAM_PROTEINS);
+        int fats = parseIntSafe(request, PARAM_FATS);
+        int carbohydrates = parseIntSafe(request, PARAM_CARBOHYDRATES);
+        int calories = parseIntSafe(request, PARAM_CALORIES);
 
         return createMeal(id, user, dateTime, mass, description, proteins, fats, carbohydrates, calories);
-    }
-    private static Meal createMeal(int id, User user, LocalDateTime dateTime, int mass, String description,
-                                   int proteins, int fats, int carbohydrates, int calories) {
-        if (calories == 0) calories = MealsUtil.calculateCalories(proteins, fats, carbohydrates);
-        Nutritionally nutritionally = new Nutritionally(proteins, fats, carbohydrates, calories);
-        return new Meal(id, user, dateTime, mass, description, nutritionally);
     }
 }

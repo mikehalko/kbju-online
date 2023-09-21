@@ -1,17 +1,25 @@
 package ru.mikehalko.kbju.controller;
 
 
-import ru.mikehalko.kbju.model.User;
+import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.service.UserService;
 
 import java.util.List;
 
 public class UserController {
 
-    private UserService service;
+    private final UserService service;
+    private static UserController instance;
 
-    public UserController(UserService service) {
+    private UserController(UserService service) {
         this.service = service;
+    }
+
+    public static synchronized UserController getInstance(UserService service) {
+        if (instance == null) {
+            instance = new UserController(service);
+        }
+        return instance;
     }
 
     public List<User> getAll() {

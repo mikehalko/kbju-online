@@ -11,6 +11,7 @@ public class MealTo {
     private int id;
     private LocalDateTime dateTime;
     private boolean excess;
+    private boolean shortage;
 
     private final int mass;
     private final String description;
@@ -18,12 +19,13 @@ public class MealTo {
 
 
 
-    public MealTo(Meal meal, boolean excess) {
+    public MealTo(Meal meal, boolean shortage, boolean excess) {
         this.dateTime = meal.getDateTime();
         this.id = meal.getId();
         this.mass = meal.getMass();
         this.description = meal.getDescription();
         this.nutritionally = meal.getNutritionally();
+        this.shortage = shortage;
         this.excess = excess;
     }
 
@@ -33,6 +35,10 @@ public class MealTo {
 
     public boolean isExcess() {
         return excess;
+    }
+
+    public boolean isShortage() {
+        return shortage;
     }
 
     public LocalDateTime getDateTime() {
@@ -73,11 +79,11 @@ public class MealTo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MealTo mealTo = (MealTo) o;
-        return id == mealTo.id && excess == mealTo.excess && mass == mealTo.mass && Objects.equals(dateTime, mealTo.dateTime) && Objects.equals(description, mealTo.description) && Objects.equals(nutritionally, mealTo.nutritionally);
+        return id == mealTo.id && excess == mealTo.excess && shortage == mealTo.shortage && mass == mealTo.mass && Objects.equals(dateTime, mealTo.dateTime) && Objects.equals(description, mealTo.description) && Objects.equals(nutritionally, mealTo.nutritionally);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dateTime, excess, mass, description, nutritionally);
+        return Objects.hash(id, dateTime, excess, shortage, mass, description, nutritionally);
     }
 }

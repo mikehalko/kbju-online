@@ -4,16 +4,25 @@ package ru.mikehalko.kbju.controller;
 import ru.mikehalko.kbju.service.MealService;
 import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.to.MealTo;
-import ru.mikehalko.kbju.util.*;
+import ru.mikehalko.kbju.util.model.MealsUtil;
+import ru.mikehalko.kbju.util.security.SecurityUtil;
 
 import java.util.List;
 
 public class MealController {
 
-    private MealService service;
+    private final MealService service;
+    private static MealController instance;
 
-    public MealController(MealService service) {
+    private MealController(MealService service) {
         this.service = service;
+    }
+
+    public static synchronized MealController getInstance(MealService service) {
+        if (instance == null) {
+            instance = new MealController(service);
+        }
+        return instance;
     }
 
     public MealTo get(int id) {
@@ -28,7 +37,7 @@ public class MealController {
 
     public List<MealTo> getAll() {
         int userId = SecurityUtil.authId();
-        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.nutritionalValue());
+        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.caloriesMax(), SecurityUtil.caloriesMin());
     }
 
     public Meal create(Meal meal) {

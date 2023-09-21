@@ -12,8 +12,17 @@ public class MealService {
 
     private final MealRepository repository;
 
-    public MealService(MealRepository repository) {
+    private static MealService instance;
+
+    private MealService(MealRepository repository) {
         this.repository = repository;
+    }
+
+    public static synchronized MealService getInstance(MealRepository repository) {
+        if (instance == null) {
+            instance = new MealService(repository);
+        }
+        return instance;
     }
 
     public Meal get(int id, int userId) {

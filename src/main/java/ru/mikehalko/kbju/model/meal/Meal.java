@@ -1,6 +1,6 @@
 package ru.mikehalko.kbju.model.meal;
 
-import ru.mikehalko.kbju.model.User;
+import ru.mikehalko.kbju.model.user.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

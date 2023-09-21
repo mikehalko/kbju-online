@@ -1,6 +1,6 @@
 package ru.mikehalko.kbju.repository;
 
-import ru.mikehalko.kbju.model.User;
+import ru.mikehalko.kbju.model.user.User;
 
 import java.util.List;
 

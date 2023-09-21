@@ -1,6 +1,6 @@
 package ru.mikehalko.kbju.inmemory;
 
-import ru.mikehalko.kbju.model.User;
+import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.UserRepository;
 import static ru.mikehalko.kbju.inmemory.InMemoryExceptions.*;
 

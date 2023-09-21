@@ -1,7 +1,6 @@
-package ru.mikehalko.kbju.util;
+package ru.mikehalko.kbju.util.security;
 
-import ru.mikehalko.kbju.model.User;
-import ru.mikehalko.kbju.model.meal.Nutritionally;
+import ru.mikehalko.kbju.model.user.User;
 
 public class SecurityUtil {
     private static User user;
@@ -12,12 +11,17 @@ public class SecurityUtil {
 
     public static int authCaloriesPerDay() {
         checkUser();
-        return user.getNutritionally().getCalories();
+        return user.getCaloriesMax();
     }
 
-    public static Nutritionally nutritionalValue() {
+    public static int caloriesMin() {
         checkUser();
-        return user.getNutritionally();
+        return user.getCaloriesMin();
+    }
+
+    public static int caloriesMax() {
+        checkUser();
+        return user.getCaloriesMax();
     }
 
     public static User getUser() {
