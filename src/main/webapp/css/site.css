@@ -1,0 +1,177 @@
+
+body {
+    height: 100vh;
+    width: 100vw;
+    min-height: 500px;
+    min-width: 610px;
+
+    background-color: #1b1b23;
+    margin: 0;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+
+#block_top_panel {
+    transition: all 200ms;
+
+    position: relative;
+    width: 100%;
+    min-height: 30px;
+    max-height: 50px;
+    min-width: 610px;
+
+    height: 10vh;
+
+    background-image: linear-gradient(to right,
+    #7e448d 76%,
+    rgba(255, 222, 166, 0.4)),
+    url("/pics/dog.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow:inset 0px 39px 0px -1.6dvi rgba(255, 255, 255, 0.11);
+    border-bottom: 4px black solid;
+}
+
+
+
+#location_path {
+    position: absolute;
+    bottom: 24%;
+    left: 2%;
+
+    text-transform: uppercase;
+    text-align: left;
+
+    color: #bababb;
+    font-size: 1.2em;
+}
+
+
+#location_path .link {
+    transition: all 200ms;
+
+    color: #bababb;
+    font-family: Verdana, serif;
+
+    background-color: #3c3f41;
+    padding: 3px 3px;
+    border-radius: 2px;
+    text-decoration: none;
+    text-shadow:0px 1px 0px #343538;
+
+    cursor: pointer;
+}
+
+#location_path a:hover {
+    transition: all 200ms;
+    background-color: #2b2b2d;
+}
+
+#location_path a:active {
+    transition: all 200ms;
+    position:relative;
+    top:1px;
+    right: 1px;
+    box-shadow:inset 0px 39px 0px -27px #393a3f;
+}
+
+
+/*main and right panel*/
+#main_and_right_panel {
+    background: linear-gradient(to bottom, #296060 90%, #173636);
+    width: 100%;
+    height: 86vh;
+    min-height: 400px;
+    min-width: 610px;
+}
+#block_main {
+    float: left;
+    width: 79.4%;
+    height: 86vh;
+    min-height: 400px;
+    min-width: 460px;
+}
+#block_right_panel {
+    background: rgb(43, 43, 44);
+    background: repeating-linear-gradient(45deg, #3f3f3f, #000, #3f3f3f 0.5%), linear-gradient(45deg, #000, #3f3f3f);
+    background-blend-mode: screen;
+    float: right;
+    height: 86vh;
+    width: 19.5vw;
+    min-height: 400px;
+    min-width: 120px;
+    border-left: 4px black solid;
+}
+
+
+/*MENU*/
+menu {
+    list-style-type: none; /* убрать маркеры */
+    margin-left: 0;
+    margin-top: 0;
+    padding-left: 0;
+    padding-top: 0;
+}
+
+.menu_button {
+    transition: all 600ms;
+    cursor:pointer;
+
+    display: block; /* центрирование вместе с margin auto */
+    margin-right: auto;
+    margin-left: auto;
+    width: 95%;
+    margin-top: 1%;
+
+    text-align: center;
+
+    background-color: #3c3f41;
+    border-radius:5px;
+    border:1px solid #323233;
+    box-shadow:inset 0px 39px 0px -0.9em #4d5154;
+
+    text-decoration: none;
+    color: #bababb;
+    text-shadow:0px 1px 0px #343538;
+    font-family: "Fira Code", monospace;
+    font-size:166%;
+}
+.menu_button:hover {
+    transition: all 600ms;
+    width: 98%;
+    background-color: #2b2b2d;
+    box-shadow:inset 0px 39px 0px -29px #393a3f;
+
+    font-size:180%;
+}
+.menu_button:active {
+    width: 96%;
+    transition: all 200ms;
+    position:relative;
+    top:1px;
+    right: 1px;
+    box-shadow:inset 0px 39px 0px -27px #393a3f;
+}
+
+/*FOOTER*/
+footer {
+    width: 100%;
+    height: 3%;
+    min-height: 30px;
+    max-height: 50px;
+    min-width: 610px;
+
+    background: linear-gradient(to top, #1b1b23 30%, #7e448d);
+    border-top: 4px black solid;
+
+    text-align: center;
+}
+
+footer div {
+    color: rgba(186, 186, 187, 0.68);
+    font-family: 'Fira Code Light', monospace;
+    font-size:50%;
+    padding-top: 1%;
+}

@@ -20,18 +20,24 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class LoginServlet extends HttpServlet {
-    public static final String ATTRIBUTE_USER = "user";
-    public static final String PARAM_NAME = "name";
-    public static final String PARAM_PASSWORD = "password";
     public static final String PARAM_ACTION = "action";
+
+    public static final String ATTRIBUTE_USER = "user";
+    public static final String PARAM_LOGIN = "login";
+    public static final String PARAM_PASSWORD = "password";
+
+    public static final String PARAM_NAME = "name";
+    public static final String PARAM_CALORIES_MIN = "calories_min";
+    public static final String PARAM_CALORIES_MAX = "calories_max";
+
 
     public static final String INDEX_HTML = "index.html";
 
-    public static final String POST_REDIRECT_REGISTRATION = "/login";
-    public static final String POST_REDIRECT_LOGIN_FAIL = "/login?msg=loginFail";
+    public static final String POST_REDIRECT_REGISTRATION = "/views/user/login";
+    public static final String POST_REDIRECT_LOGIN_FAIL = "/views/user/login?msg=loginFail";
     public static final String POST_REDIRECT_LOGIN_ACCESS = "meals";
-    public static final String GET_FORWARD_OUT = INDEX_HTML;
-    public static final String GET_FORWARD_ACTION_IS_NULL = "login.jsp";
+    public static final String GET_REDIRECT_OUT = INDEX_HTML;
+    public static final String GET_FORWARD_ACTION_IS_NULL = "/views/user/login.jsp";
 
     private final Logger log = LoggerFactory.getLogger(LoginServlet.class);
     private static UserRepository userRepository;
@@ -45,18 +51,23 @@ public class LoginServlet extends HttpServlet {
         super.init(config);
     }
 
+    // TODO валидация полей, валидация повтора пароля
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userName = request.getParameter(PARAM_NAME);
+        String userLogin = request.getParameter(PARAM_LOGIN);
         String password = request.getParameter(PARAM_PASSWORD);
         String action = request.getParameter(PARAM_ACTION);
-        log.debug("name = {}, pass = {}, action = {}", userName, password, action);
+        log.debug("login = {}, pass = {}, action = {}", userLogin, password, action); // TODO убрать password
         HttpSession session = request.getSession(); // !
         switch (action) {
             case "login":
-                login(request, response, session, userName, password);
+                login(request, response, session, userLogin, password);
                 return;
             case "register":
-                register(request, response, session, userName, password, true);
+                String userName = request.getParameter(PARAM_NAME);
+                String userCalMin = request.getParameter(PARAM_CALORIES_MIN);
+                String userCalMax = request.getParameter(PARAM_CALORIES_MAX);
+                register(request, response, session, userLogin, password,
+                        userName, Integer.parseInt(userCalMin), Integer.parseInt(userCalMax), true);
                 return;
         }
 
@@ -86,22 +97,25 @@ public class LoginServlet extends HttpServlet {
     }
 
     private void register(HttpServletRequest request, HttpServletResponse response,
-                          HttpSession session, String userName, String password, boolean loginAfterRegistration) throws ServletException, IOException {
+                          HttpSession session, String userLogin, String password,
+                          String userName, int calMin, int calMax, boolean loginAfterRegistration) throws ServletException, IOException {
         String passwordHash = null;
         try {
             passwordHash = Encryption.hashing(password);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        UserCredential credential = new UserCredential(userName, passwordHash);
+
+        // TODO валидация уникальности
+        UserCredential credential = new UserCredential(userLogin, passwordHash);
         log.debug("credential = {}", credential);
-        User user = new User(0, credential.getName(), 0, 0);
+        User user = new User(0, userName, calMin, calMax);
         user = userRepository.save(user);
         log.debug("new user saved = {}", user);
         credentialRepository.save(credential, user.getId());
         log.debug("credential saved");
         if (loginAfterRegistration) {
-            login(request, response, session, userName, password); // register -> login
+            login(request, response, session, userLogin, password); // register -> login
         } else {
             response.sendRedirect(POST_REDIRECT_REGISTRATION);
         }
@@ -119,8 +133,9 @@ public class LoginServlet extends HttpServlet {
 
         switch (action) {
             case "out":
+                log.debug("session invalidate, redirect to " + GET_REDIRECT_OUT);
                 request.getSession().invalidate();
-                request.getRequestDispatcher(GET_FORWARD_OUT).forward(request, response);
+                response.sendRedirect(GET_REDIRECT_OUT);
                 break;
             default:
                 log.debug("default");

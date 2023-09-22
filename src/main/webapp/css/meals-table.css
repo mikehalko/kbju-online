@@ -1,0 +1,121 @@
+.content {
+    color: #bababb;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.36);
+    font-family: Verdana, serif;
+}
+
+.content .text {
+    font-size: 1.3em;
+    overflow-x:auto;
+    padding: 1.8vh 2vw 1vh 1.0vw;
+    border-bottom: #37393b;
+
+    height: 25vh;
+    max-height: 80px;
+}
+
+/* UNDER TABLE PANEL */
+.under_table_panel {
+    width: 15.2%;
+    margin: 0 1.15vw 1vh 2vw;
+    float: right;
+}
+
+/* TABLE */
+.scroll-table-head {
+    background-color: rgba(109, 116, 127, 0.63);
+    height: 5vh;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: left;
+    font-weight: 100;
+    padding: 1vh 0.3vw;
+    font-size: 14px;
+}
+.scroll-table-body {
+    transition: all 200ms;
+    overflow-x: auto;
+    height: 45vh;
+    margin-top: 0px;
+    margin-bottom: 40px;
+    padding: 0 0.3vw;
+
+    background: rgba(255, 255, 255, 0.06); /* todo убрать? */
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.27);
+}
+.scroll-table {
+    width:98%;
+    padding: 0 0 0 1vw;
+}
+.scroll-table table {
+    width:100%;
+    table-layout: fixed;
+    border-bottom: 1px solid rgb(148, 153, 162);
+}
+.scroll-table-body td {
+    text-align: left;
+    border-right: 1px solid rgb(148, 153, 162);
+    vertical-align: top;
+}
+
+.button {
+    width: 10vw;
+    vertical-align: middle;
+}
+.date {
+    font-size: 12px;
+    width: 82px;
+}
+.description  {
+    font-size: 19px;
+    width: 40vw;
+}
+.calories {
+    font-size: 19px;
+    width: 50px;
+}
+
+.scroll-table tbody tr:nth-child(even){
+    background: rgba(126, 68, 141, 0.54);
+}
+.normal .description, .normal .calories  {
+    color: #f1e490;
+}
+.excess .description, .excess .calories, .about-excess {
+    color: #db444b;
+}
+.shortage .description, .shortage .calories, .about-shortage {
+    color: #3d8aec;
+}
+
+/*buttons*/
+.scroll-table-body button, .under_table_panel button {
+    transition: all 200ms;
+
+    width: 100%;
+    text-align: center;
+    display:inline-block;
+    cursor:pointer;
+
+    background-color: #3c3f41;
+    color: #bababb;
+    border-radius:10px;
+    border:1px solid #323233;
+}
+.scroll-table-body button, .under_table_panel button {
+    font-family: "Fira Code", monospace;
+    font-size: 1.0em;
+    text-transform: uppercase;
+
+    text-decoration:none;
+    text-shadow:0px 1px 0px #343538;
+}
+.scroll-table-body button:hover, .under_table_panel button:hover {
+    transition: all 200ms;
+
+    background-color: #2b2b2d;
+}
+.scroll-table-body button:active, .under_table_panel button:active {
+    position:relative;
+    top:1px;
+}

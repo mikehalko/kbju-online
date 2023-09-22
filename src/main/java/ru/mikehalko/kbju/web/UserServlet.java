@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.UserRepository;
-import ru.mikehalko.kbju.repository.sql.UserCredentialRepositorySQL;
 import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
 
@@ -14,13 +13,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 
 import static ru.mikehalko.kbju.util.model.UserUtil.createUser;
 
 public class UserServlet extends HttpServlet {
     // show, update
-    public static final String ATTRIBUTE_USER = "user";
+    public static final String ATTRIBUTE_USER = "user_edit";
     public static final String PARAM_ACTION = "action";
     public static final String PARAM_ACTION_GET = "get";
     public static final String PARAM_ACTION_UPDATE = "update";
@@ -68,11 +66,12 @@ public class UserServlet extends HttpServlet {
         log.debug("doPost");
 
         User updatedUser = parseUser(request);
+        // TODO валидация
         if (ServletSecurityUtil.getUserSession(request).getId() == updatedUser.getId()) {
             ServletSecurityUtil.setUserSession(request, userRepository.save(updatedUser));
             log.debug("save {}", updatedUser);
         } else {
-            log.debug("auth.id != updated.id");
+            log.error("auth.id != updated.id");
         }
         response.sendRedirect(POST_REDIRECT_AFTER_UPDATE);
     }

@@ -2,57 +2,97 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html lang="ru">
+<!DOCTYPE html>
+<html>
 <head>
     <title>Meals</title>
-    <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="../../css/meals.css">
+    <link rel="stylesheet" href="../../css/site.css">
+    <link rel="stylesheet" href="../../css/miniprofile.css">
+    <link rel="stylesheet" href="../../css/meals-table.css">
 </head>
 <body>
-<hr>
-<h3><a class="href" href="../../index.html">Главная</a> | <a class="href_opened">Список приёмов пищи</a></h3>
-<hr>
-<section class="profile">
-    <c:set var="user" value="${requestScope.user}"/>
-    <jsp:useBean id="user" type="ru.mikehalko.kbju.model.user.User"/>
-    <p>
-        ИМЯ ПОЛЬЗОВАТЕЛЯ:
-        <a>${user.name}</a>
-    </p>
-    <p>
-        НОРМА КАЛОРИЙ:
-        <a class="shortages">min: ${user.caloriesMin}</a>
-        <a class="excess">max: ${user.caloriesMax}</a>
-    </p>
-    <a href="${pageContext.request.contextPath}/user"><button class="button">Профиль</button></a> |
-    <a href="${pageContext.request.contextPath}/login?action=out"><button>Выйти из аккаунта</button></a>
-</section>
-<hr>
-<div><a href="../meals?action=create"><button>Новый приём пищи</button></a></div>
-<br>
-<section class="meal_table">
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-        <tr>
-            <th>ДАТА</th>
-            <th>ОПИСАНИЕ</th>
-            <th>КАЛОРИИ</th>
-            <th>-</th>
-        </tr>
-        </thead>
 
-        <c:forEach items="${requestScope.list}" var="meal">
-            <jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo"/>
-            <tr class="${meal.excess ? 'excess' : meal.shortage ? 'shortages' : 'normal'}">
-                <td><%=DateTimeUtil.toString(meal.getDateTime())%></td>
-                <td>${meal.description}</td>
-                <td>${meal.calories}</td>
-                <td><a href="?action=get&id=${meal.id}"><button class="button">открыть</button></a></td>
-            </tr>
-        </c:forEach>
-    </table>
+<div id="block_top_panel">
+    <div id="location_path">
+        <a class="link" href="../../index.html">meal page</a> >> <a class="link" href="meals">list of meals</a>
+    </div>
+</div>
 
-</section>
+<div id="main_and_right_panel">
+
+    <div id="block_main">
+        <div class="content">
+            <div class="text">
+                <p>
+                <p>Здесь список приемов пищи. Добавляйте записи, чтобы отслеживать потребление калорий.
+                <a class="about-shortage">Превышение</a> калорий или <a class="about-excess">недостаток</a> (в день) будет отображен с помощью выделения цветов:
+                <a class="about-shortage">голубым</a> и <a class="about-excess">красным</a>.</p>
+                <!--        <br>-->
+                <!--        Сайт существует в качестве пет-проекта. Визуальная часть (frontend) служит только для удобства взаимодействия с веб-приложением. Веб-приложение написано на языке Java, работает в контейнере сервлетов Tomcat, который находится внутри контейнера Docker на выделенном VDS линукс-сервере, и взаимодействует с БД Postgres в отдельном контейнере. Данный пет-проект не использует Spring, Hibernate. Использование данных фреймворков будет задействовано в следующих обновлениях, либо в другом пет-проекте.-->
+                <!--        </p>-->
+            </div>
+
+            <section class="under_table_panel">
+                <a href="meals?action=create"><button>create new</button></a>
+            </section>
+
+            <div class="scroll-table">
+
+                <table class="scroll-table-head">
+                    <thead>
+                    <tr>
+                        <th class="date">data</th>
+                        <th class="description">description</th>
+                        <th class="calories">kcal</th>
+                        <th class="button">button</th>
+                    </tr>
+                    </thead>
+                </table>
+
+                <div class="scroll-table-body">
+                    <table>
+                        <tbody>
+                        <c:forEach items="${requestScope.list}" var="meal">
+                            <jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo"/>
+                            <tr class="${meal.excess ? 'excess' : meal.shortage ? 'shortage' : 'normal'}">
+<%--                                 TODO Date сделать без года--%>
+                                <td class="date"><a><%=DateTimeUtil.toString(meal.getDateTime())%></a></td>
+                                <td class="description"><a>${meal.description}</a></td>
+                                <td class="calories"><a>${meal.calories}</a></td>
+                                <td class="button"><a href="?action=get&id=${meal.id}"><button>open</button></a></td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div id="block_right_panel">
+        <section class="mini_profile">
+            <jsp:useBean id="user" type="ru.mikehalko.kbju.model.user.User" scope="session"/>
+            <a id="user_login">USER_LOGIN</a>
+            <p class="profile_info_line"><label for="user_name">name:</label><a id="user_name">${user.name}</a></p>
+            <p class="profile_info_line"><label for="user_calories_min">calories (min):</label><a id="user_calories_min">${user.caloriesMin}</a></p>
+            <p class="profile_info_line"><label for="user_calories_max">calories (max):</label><a id="user_calories_max">${user.caloriesMax}</a></p>
+        </section>
+        <menu>
+            <li><a class="menu_button" href="meals">meals</a></li>
+            <li><a class="menu_button" href="user">profile</a></li>
+            <li><a class="menu_button" href="login?action=out">logout</a></li>
+        </menu>
+    </div>
+</div>
+
+<footer>
+    <div>
+        <a>defezis 2023</a>
+    </div>
+</footer>
 
 </body>
 </html>

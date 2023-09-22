@@ -17,7 +17,11 @@ public class MealTo {
     private final String description;
     private final Nutritionally nutritionally;
 
-
+    public MealTo() {
+        this.mass = 0;
+        this.description = null;
+        this.nutritionally = new Nutritionally();
+    }
 
     public MealTo(Meal meal, boolean shortage, boolean excess) {
         this.dateTime = meal.getDateTime();
@@ -70,7 +74,7 @@ public class MealTo {
     }
 
     public String toString() {
-        return String.format("MEAL-TO[%3d] (%s) %s, | %s  %4d g  \"%s\"", id, excess,
+        return String.format("MEAL-TO[%3d] (E:%s|   S:%s) %s, | %s  %4d g  \"%s\"", id, excess, shortage,
                 dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), nutritionally, mass, description);
     }
 

@@ -1,0 +1,37 @@
+.content {
+    color: #bababb;
+    padding: 1.5% 3% 2% 1.5%;
+    font-family: Verdana, serif;
+}
+
+.content .text {
+    overflow-x:auto;
+    border-bottom: #37393b;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.36);
+}
+
+#timestamp {
+    position: relative;
+    left: 35%;
+}
+#description {
+    float: left;
+}
+#description textarea {
+    resize: none;
+}
+#pfc {
+    float: right;
+}
+#mass_cal {
+    float: right;
+}
+#ok_cancel_buttons {
+    float: right;
+    margin-right: 10vw;
+}
+
+#note {
+    padding: 10px 5px;
+    font-size: 0.8em;
+}

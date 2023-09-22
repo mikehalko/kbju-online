@@ -1,0 +1,43 @@
+.mini_profile {
+    backdrop-filter: blur(1px);
+    display: block;
+    margin: 0.8em auto 3.5%;
+
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    width: 18vw;
+    height: 15vw;
+    min-height: 110px;
+    min-width: 110px;
+}
+
+.mini_profile label {
+    font-size: 1.35vw;
+    text-transform: uppercase;
+}
+#user_login {
+    padding: 0 1.3vw 0 1.3vw;
+    font-size: 2.5vw;
+    color: #e1e1e1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.68);
+}
+
+#user_name, #user_calories_min, #user_calories_max {
+    background: #7e448d;
+    padding: 0.1em 0.2vw;
+}
+#user_name {
+    font-size: 1.5vw;
+    margin-left: 2vw;
+    word-wrap: anywhere;
+}
+
+#user_calories_min, #user_calories_max {
+    font-size: 1.5vw;
+    margin-left: 0.5vw;
+}
+
+.profile_info_line {
+    margin: 0.5em 0.4vw;
+    font-family: monospace;
+}

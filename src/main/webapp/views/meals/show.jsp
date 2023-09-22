@@ -1,27 +1,110 @@
 <%@ page import="ru.mikehalko.kbju.util.DateTimeUtil" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html lang="ru">
+<!DOCTYPE html>
+<html>
 <head>
-    <title>Meal show</title>
-    <link rel="stylesheet" href="../../css/main.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0">
+        <title>Show Meal</title>
+        <link rel="stylesheet" href="../../css/site.css">
+        <link rel="stylesheet" href="../../css/show.css">
+        <link rel="stylesheet" href="../../css/miniprofile.css">
 </head>
-<hr>
-<h3><a class="href" href="../../index.html">Главная</a> | <a class="href" href="../meals">Список приёмов пищи</a> | <a class="href_opened">Приём пищи</a></h3>
-<hr>
-<c:set var="meal" value="${requestScope.meal}"/>
-<jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo"/>
-<section>
-    <p>Дата и время: <%=DateTimeUtil.toString(meal.getDateTime())%></p>
-    <p>Описание: ${meal.description}</p>
-    <p>Масса: ${meal.mass}</p>
-    <p>Белки: ${meal.proteins}</p>
-    <p>Жиры: ${meal.fats}</p>
-    <p>Углеводы: ${meal.carbohydrates}</p>
-    <p>Калории: ${meal.calories}</p>
-    <a href="?action=update&id=${meal.id}"><button>Править</button></a>
-    <a href="?action=delete&id=${meal.id}"><button>Удалить</button></a>
-</section>
+<body>
+<div id="block_top_panel">
+    <div id="location_path">
+        <a class="link" href="../../index.html">main page</a> >> <a class="link" href="meals">list of meals</a> >> <a class="link" href="">meal</a>
+    </div>
+</div>
+
+<jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo" scope="request"/>
+
+<div id="main_and_right_panel">
+    <div id="block_main">
+        <div class="content">
+
+            <h1>The Meal № ${meal.id}</h1>
+            <section id="desc">
+                <label for="dateTime">Timestamp:</label>
+                <a id="dateTime"><%=DateTimeUtil.toString(meal.getDateTime())%></a>
+                <br>
+                <label for="description">Description:</label>
+                <a id="description">${meal.description}</a>
+                <br>
+            </section>
+
+            <section id="params">
+                <h2>parameters</h2>
+                <div>
+                    <table>
+                        <thead><tr>
+                            <th>
+                                Mass
+                            </th>
+                            <th>
+                                Calories
+                            </th>
+                        <tr></thead>
+                        <tbody>
+                        <tr>
+                            <td>${meal.mass} g</td>
+                            <td>${meal.calories} kk</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <table>
+                        <thead><tr>
+                            <th>
+                                Proteins
+                            </th>
+                            <th>
+                                Fats
+                            </th>
+                            <th>
+                                Carbohydrates
+                            </th>
+                        <tr></thead>
+                        <tbody>
+                        <tr>
+                            <td>${meal.proteins}</td>
+                            <td>${meal.fats}</td>
+                            <td>${meal.carbohydrates}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="meal_buttons">
+                <a href="?action=update&id=${meal.id}"><button>edit</button></a>
+                <a href="?action=delete&id=${meal.id}"><button>delete</button></a>
+            </section>
+        </div>
+    </div>
+
+    <div id="block_right_panel">
+        <section class="mini_profile">
+            <jsp:useBean id="user" class="ru.mikehalko.kbju.model.user.User" scope="session"/>
+            <a id="user_login">USER_LOGIN</a>
+            <p class="profile_info_line"><label for="user_name">name:</label><a id="user_name">${user.name}</a></p>
+            <p class="profile_info_line"><label for="user_calories_min">calories (min):</label><a id="user_calories_min">${user.caloriesMin}</a></p>
+            <p class="profile_info_line"><label for="user_calories_max">calories (max):</label><a id="user_calories_max">${user.caloriesMax}</a></p>
+        </section>
+        <menu>
+            <li><a class="menu_button" href="meals">meals</a></li>
+            <li><a class="menu_button" href="user">profile</a></li>
+            <li><a class="menu_button" href="login?action=out">logout</a></li>
+        </menu>
+    </div>
+
+</div>
+
+<footer>
+    <div>
+        <a>defezis 2023</a>
+    </div>
+</footer>
+
 </body>
 </html>

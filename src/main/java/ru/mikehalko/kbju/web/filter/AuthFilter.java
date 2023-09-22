@@ -28,6 +28,7 @@ public class AuthFilter extends HttpFilter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         servletRequest.setCharacterEncoding("UTF-8");
+        log.debug("auth filter");
         try {
             // TODO ловить исключение в репозиториях перед отправкой запроса? Чтобы переподключиться в тот момент
             reconnectIfNeed(getConnectionHold(), Context.getHavingConnection());

@@ -47,6 +47,10 @@
         <filter-name>authFilter</filter-name>
         <url-pattern>/login</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/user</url-pattern>
+    </filter-mapping>
 
     <servlet>
         <servlet-name>loginServlet</servlet-name>

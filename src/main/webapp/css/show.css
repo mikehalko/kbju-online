@@ -1,0 +1,97 @@
+.content {
+    position: relative;
+    color: #bababb;
+    padding: 1.5% 3% 2% 1.5%;
+    font-family: Verdana, serif;
+}
+.content .text {
+    overflow-x:auto;
+    border-bottom: #37393b;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.36);
+}
+.content label {
+    color: #37393b;
+    font-weight: bold;
+    font-size: 1.9vw;
+}
+
+/* description */
+#desc {
+    width: 50%;
+    height: 25vh;
+    min-height: 4em;
+    float: left;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 1em 1em 4em 1em;
+    font-size: 1.7vw;
+    word-wrap: anywhere;
+}
+
+#params {
+    float: right;
+    width: 40%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    font-size: 1.4vw;
+}
+#params th {
+    padding-right: 2em;
+}
+#params table {
+    padding-bottom: 0.8em;
+}
+
+
+#meal_buttons {
+    position: absolute;
+    left: 59%;
+    top: 300%;
+    width: 38%;
+}
+#meal_buttons a {
+    font-size: 100%;
+}
+#meal_buttons a button {
+    text-align: center;
+    cursor:pointer;
+
+    margin-bottom: 10px;
+
+    background-color: #3c3f41;
+    color: #bababb;
+    border-radius:10px;
+    border:1px solid #323233;
+
+    font-family: "Fira Code", monospace;
+    font-size: 200%;
+    text-transform: uppercase;
+
+    text-decoration:none;
+    text-shadow:0px 1px 0px #343538;
+}
+#meal_buttons a button:hover {
+    transition: all 200ms;
+    background-color: #2b2b2d;
+}
+#meal_buttons a button:active {
+    position:relative;
+    top:1px;
+}
+
+h1, h2 {
+    color: #e1e1e1;
+    text-transform: uppercase;
+    text-align: center;
+}
+h1 {
+    font-size: 150%;
+    font-weight: 100;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 100%;
+    font-weight: 80;
+    margin-bottom: 10px;
+}

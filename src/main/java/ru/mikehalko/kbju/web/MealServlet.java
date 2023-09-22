@@ -2,7 +2,6 @@ package ru.mikehalko.kbju.web;
 
 
 import ru.mikehalko.kbju.model.meal.Meal;
-import ru.mikehalko.kbju.model.meal.Nutritionally;
 import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.MealRepository;
 import ru.mikehalko.kbju.repository.sql.MealRepositorySQL;
@@ -48,8 +47,8 @@ public class MealServlet extends HttpServlet {
     public static final String PARAM_CALORIES = "calories";
 
     public static final String GET_FORWARD_SHOW = "views/meals/show.jsp";
-    public static final String GET_FORWARD_UPDATE = "views/meals/update.jsp";
-    public static final String GET_FORWARD_CREATE = "views/meals/create.jsp";
+    public static final String GET_FORWARD_UPDATE = "views/meals/meal-form.jsp";
+    public static final String GET_FORWARD_CREATE = "views/meals/meal-form.jsp";
     public static final String GET_FORWARD_GET_ALL = "views/meals/meals.jsp";
     public static final String GET_REDIRECT_AFTER_DELETE = "meals";
     public static final String POST_REDIRECT_AFTER_CREATE_MEAL_ACTION_GET_ID = "meals?action=get&id=";
@@ -68,7 +67,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("doGet");
-        request.setAttribute(ATTRIBUTE_USER, ServletSecurityUtil.getUserSession(request));
 
         String action = request.getParameter(PARAM_ACTION);
         if (action == null) action = "";
@@ -91,6 +89,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case PARAM_ACTION_CREATE:
                 log.debug("create forward");
+                request.setAttribute(ATTRIBUTE_MEAL, new MealTo());
                 request.getRequestDispatcher(GET_FORWARD_CREATE).forward(request, response);
                 break;
             case PARAM_ACTION_DELETE:
@@ -104,6 +103,7 @@ public class MealServlet extends HttpServlet {
                 List<MealTo> result =
                         MealsUtil.getTos(repository.getAll(ServletSecurityUtil.authId(request)),
                                 ServletSecurityUtil.caloriesMin(request), ServletSecurityUtil.caloriesMax(request));
+                log.debug("meals transfer = {}", result);
                 request.setAttribute(ATTRIBUTE_MEALS_LIST, result);
                 request.getRequestDispatcher(GET_FORWARD_GET_ALL).forward(request, response);
                 break;
@@ -117,6 +117,7 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         Meal meal = parseMeal(request, ServletSecurityUtil.getUserSession(request));
+        // TODO валидация
 
         log.debug(meal.isNew() ? "save {}" : "create {}", meal);
         repository.save(meal, ServletSecurityUtil.authId(request));
@@ -124,9 +125,12 @@ public class MealServlet extends HttpServlet {
         response.sendRedirect(POST_REDIRECT_AFTER_CREATE_MEAL_ACTION_GET_ID + meal.getId());
     }
 
+
+
+
     public static int parseIntSafe(HttpServletRequest request, String param) {
-        String id = Objects.requireNonNull(request.getParameter(param)); // TODO неверно
-        return id.isEmpty() ? 0 : Integer.parseInt(id);
+        String id = Objects.requireNonNull(request.getParameter(param)); // TODO неверно!! NullPointer exception
+        return id.isEmpty() ? 0 : Integer.parseInt(id); // TODO ноль должен и так приходить. Пусто быть не должно
     } // TODO убрать эти методы отсюда
 
     public static String parseStringSafe(HttpServletRequest request, String param) {
@@ -138,6 +142,7 @@ public class MealServlet extends HttpServlet {
         return dateTime.isEmpty() ? LocalDateTime.now() : LocalDateTime.parse(dateTime); // not safe
     }
 
+    // TODO убрать в util класс
     private static Meal parseMeal(HttpServletRequest request, User user) {
         int id = parseIntSafe(request, PARAM_ID);
         LocalDateTime dateTime = parseLocalDateTimeSafe(request ,PARAM_DATE_TIME);
