@@ -19,17 +19,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import static ru.mikehalko.kbju.web.constant.UserParams.*;
+
 public class LoginServlet extends HttpServlet {
     public static final String PARAM_ACTION = "action";
 
     public static final String ATTRIBUTE_USER = "user";
     public static final String PARAM_LOGIN = "login";
     public static final String PARAM_PASSWORD = "password";
-
-    public static final String PARAM_NAME = "name";
-    public static final String PARAM_CALORIES_MIN = "calories_min";
-    public static final String PARAM_CALORIES_MAX = "calories_max";
-
 
     public static final String INDEX_HTML = "index.html";
 
@@ -63,9 +60,9 @@ public class LoginServlet extends HttpServlet {
                 login(request, response, session, userLogin, password);
                 return;
             case "register":
-                String userName = request.getParameter(PARAM_NAME);
-                String userCalMin = request.getParameter(PARAM_CALORIES_MIN);
-                String userCalMax = request.getParameter(PARAM_CALORIES_MAX);
+                String userName = request.getParameter(PARAM_NAME.value());
+                String userCalMin = request.getParameter(PARAM_CALORIES_MIN.value());
+                String userCalMax = request.getParameter(PARAM_CALORIES_MAX.value());
                 register(request, response, session, userLogin, password,
                         userName, Integer.parseInt(userCalMin), Integer.parseInt(userCalMax), true);
                 return;

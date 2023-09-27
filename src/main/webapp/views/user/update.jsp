@@ -1,3 +1,5 @@
+<%@ page import="ru.mikehalko.kbju.util.web.validation.UserValidation" %>
+<%@ page import="ru.mikehalko.kbju.web.constant.UserParams" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -10,6 +12,7 @@
     <link rel="stylesheet" href="/css/miniprofile.css">
     <link rel="stylesheet" href="/css/create.css">
     <link rel="stylesheet" href="/css/user-form.css">
+    <link rel="stylesheet" href="/css/validation_form.css">
 </head>
 <body>
 
@@ -29,21 +32,21 @@
                 <jsp:useBean id="user_edit" type="ru.mikehalko.kbju.model.user.User" scope="request"/>
                 <form id="create_user" method="post" action="">
                     <h3>User Edit Form</h3>
-
+                    <% UserValidation valid = (UserValidation) request.getAttribute("validator");%>
                     <input type="hidden" name="user_id" value="${user_edit.id}">
 
                     <section id="sections">
                         <section class="section">
                             <div class="input_container">
-                                <input id="nickname" type="text" name="name" placeholder=" " value="${user_edit.name}" required/>
+                                <input id="nickname" class="<%= valid == null ? "" : valid.isValid(UserParams.PARAM_NAME) ? "" : "fail_field"%>" type="text" name="name" placeholder=" " value="${user_edit.name}" required/>
                                 <label>nickname</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_min" type="number" name="calories_min" placeholder=" " value="${user_edit.caloriesMin}"/>
+                                <input id="calories_min" class="<%= valid == null ? "" : valid.isValid(UserParams.PARAM_CALORIES_MIN) ? "" : "fail_field"%>" type="number" name="calories_min" placeholder=" " value="${user_edit.caloriesMin}"/>
                                 <label>calories min</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_max" type="number" name="calories_max" placeholder=" " value="${user_edit.caloriesMax}"/>
+                                <input id="calories_max" class="<%= valid == null ? "" : valid.isValid(UserParams.PARAM_CALORIES_MAX) ? "" : "fail_field"%>" type="number" name="calories_max" placeholder=" " value="${user_edit.caloriesMax}"/>
                                 <label>calories max</label>
                             </div>
                         </section>
@@ -69,10 +72,11 @@
                     <section id="under_form">
                         <section id="buttons">
                             <button name="submit" type="submit">save</button>
-                            <button onclick="window.history.back()" type="button">cancel</button>
+                            <button onclick="window.history.back()" type="button">cancel</button> <!-- // TODO если ошибка - вернет не туда -->
                         </section>
+                        <% String message = valid != null ? valid.resultMessage() : null;%>
+                        <%= message != null ? "<p class=\"fail_message\">" + message + "</p>" : "" %>
                     </section>
-
                 </form>
             </section>
 
@@ -90,7 +94,7 @@
         </section>
         <menu>
             <li><a class="menu_button" href="meals">meals</a></li>
-            <li><a class="menu_button" href="user">profile</a></li>
+            <li><a class="menu_button" href="user?action=get">profile</a></li>
             <li><a class="menu_button" href="login?action=out">logout</a></li>
         </menu>
     </div>

@@ -93,7 +93,7 @@
         </section>
         <menu>
             <li><a class="menu_button" href="meals">meals</a></li>
-            <li><a class="menu_button" href="user">profile</a></li>
+            <li><a class="menu_button" href="user?action=get">profile</a></li>
             <li><a class="menu_button" href="login?action=out">logout</a></li>
         </menu>
     </div>

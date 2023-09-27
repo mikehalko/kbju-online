@@ -74,7 +74,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         log.debug("update meal={}", user);
         String userUpdateSQL = String.format(
                 "UPDATE \"%1$s\" SET " +
-                        "%2$s = '%3$s', %4$s = %5$d, %6$s = %7$d" +
+                        "%2$s = '%3$s', %4$s = %5$d, %6$s = %7$d " +
                         "WHERE %8$s = %9$d RETURNING %10$s;",
                 USER_TABLE, // 1
                 USER_NAME, user.getName(), // 2, 3

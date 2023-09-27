@@ -21,7 +21,10 @@ public class MealTo {
         this.mass = 0;
         this.description = null;
         this.nutritionally = new Nutritionally();
+        this.dateTime = LocalDateTime.now();
     }
+
+    public MealTo(Nutritionally nutritionally){this.nutritionally = nutritionally; this.description="";this.mass=0;} // TODO убрать
 
     public MealTo(Meal meal, boolean shortage, boolean excess) {
         this.dateTime = meal.getDateTime();

@@ -1,5 +1,10 @@
 <%@ page import="ru.mikehalko.kbju.util.DateTimeUtil" %>
+<%@ page import="ru.mikehalko.kbju.util.web.validation.MealValidation" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.MealParams.PARAM_DATE_TIME" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.MealParams.PARAM_DESCRIPTION" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.MealParams.*" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -11,6 +16,7 @@
   <link rel="stylesheet" href="../../css/miniprofile.css">
   <link rel="stylesheet" href="../../css/create.css">
   <link rel="stylesheet" href="../../css/meal-form.css">
+  <link rel="stylesheet" href="../../css/validation_form.css">
   <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
   <script src="../../scripts/meal-form.js"></script>
 </head>
@@ -32,40 +38,41 @@
         <form id="create_meal" method="post" action="">
           <h3 class="create">Meal Create Form</h3>
           <h3 class="edit">Meal Edit Form</h3>
+          <% MealValidation valid = (MealValidation) request.getAttribute("validator");%>
           <input id="meal_id" type="hidden" name="id" value="${meal.id}">
           <section id="sections">
             <section class="section">
               <div class="input_container">
-                <input id="timestamp" type="datetime-local" name="dateTime" value="<%=DateTimeUtil.toString(meal.getDateTime())%>" required autofocus/>
+                <input id="timestamp" class="<%= valid == null? "" : valid.isValid(PARAM_DATE_TIME) ? "" : "fail_field"%>" type="datetime-local" name="dateTime" value="<%=DateTimeUtil.toString(meal.getDateTime())%>" required autofocus/>
               </div>
               <div class="input_container">
-                <textarea id="description" placeholder=" " name="description" maxlength="76" required>${meal.description}</textarea>
+                <textarea id="description" class="<%= valid == null? "" : valid.isValid(PARAM_DESCRIPTION) ? "" : "fail_field"%>" placeholder=" " name="description" maxlength="76" required>${meal.description}</textarea>
                 <label>description</label>
               </div>
             </section>
 
             <section class="section">
               <div class="input_container">
-                <input id="proteins" type="number" name="proteins" placeholder=" " value="${meal.proteins}" required/>
+                <input id="proteins" class="<%= valid == null? "" : valid.isValid(PARAM_PROTEINS) ? "" : "fail_field"%>" type="number" name="proteins" placeholder=" " value="${meal.proteins}" required/>
                 <label>proteins</label>
               </div>
               <div class="input_container">
-                <input id="fats" type="number" name="fats" placeholder=" " value="${meal.fats}" required/>
+                <input id="fats" class="<%= valid == null ? "" : valid.isValid(PARAM_FATS) ? "" : "fail_field"%>" type="number" name="fats" placeholder=" " value="${meal.fats}" required/>
                 <label>fats</label>
               </div>
               <div class="input_container">
-                <input id="carbohydrates" type="number" name="carbohydrates" placeholder=" " value="${meal.carbohydrates}" required/>
+                <input id="carbohydrates" class="<%= valid == null ? "" : valid.isValid(PARAM_CARBOHYDRATES) ? "" : "fail_field"%>" type="number" name="carbohydrates" placeholder=" " value="${meal.carbohydrates}" required/>
                 <label>carbohydrates</label>
               </div>
             </section>
 
             <section class="section">
               <div class="input_container">
-                <input id="mass" type="number" name="mass" placeholder=" " value="${meal.mass}" required/>
+                <input id="mass" class="<%= valid == null? "" : valid.isValid(PARAM_MASS) ? "" : "fail_field"%>" type="number" name="mass" placeholder=" " value="${meal.mass}" required/>
                 <label>mass</label>
               </div>
               <div class="input_container">
-                <input id="calories" type="number" name="calories" placeholder=" " value="${meal.calories}" required/>
+                <input id="calories" class="<%= valid == null ? "" : valid.isValid(PARAM_CALORIES) ? "" : "fail_field"%>" type="number" name="calories" placeholder=" " value="${meal.calories}" required/>
                 <label>calories*</label>
               </div>
             </section>
@@ -74,11 +81,12 @@
           <section id="under_form">
             <section id="buttons">
               <button name="submit" type="submit" id="meal-submit">save</button>
-              <button onclick="window.history.back()" type="button">cancel</button>
+              <button onclick="window.history.back()" type="button">cancel</button> <!-- // TODO если ошибка - вернет не туда -->
             </section>
             <p id="note">* - enter "0" calories, then the calculation will be made based on the amount of proteins, fats and carbohydrates.</p>
+            <% String message = valid == null ? null : valid.resultMessage();%>
+            <%= message != null ? "<p class=\"fail_message\">" + message + "</p>" : "" %>
           </section>
-
         </form>
       </section>
     </div>
@@ -95,7 +103,7 @@
     </section>
     <menu>
       <li><a class="menu_button" href="meals">meals</a></li>
-      <li><a class="menu_button" href="user">profile</a></li>
+      <li><a class="menu_button" href="user?action=get">profile</a></li>
       <li><a class="menu_button" href="login?action=out">logout</a></li>
     </menu>
   </div>

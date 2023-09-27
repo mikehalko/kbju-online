@@ -82,8 +82,7 @@
     min-height: 30px;
 }
 #note {
-    float: right;
-    font-size: 20px;
+    margin: 10px;
     box-sizing: border-box;
 }
 
