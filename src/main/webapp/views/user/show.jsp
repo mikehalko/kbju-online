@@ -54,7 +54,7 @@
             </section>
 
             <section id="meal_buttons">
-                <a href="${pageContext.request.contextPath}user?action=update&id=${user.id}"><button>edit</button></a>
+                <a href="${pageContext.request.contextPath}user?action=update"><button>edit</button></a>
             </section>
         </div>
     </div>

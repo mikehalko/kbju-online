@@ -1,3 +1,8 @@
+<%@ page import="ru.mikehalko.kbju.util.web.validation.UserValidation" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialAttribute.*" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserAttribute.*" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*" %>
+<%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidation" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -9,8 +14,11 @@
     <link rel="stylesheet" href="../../css/create.css">
     <link rel="stylesheet" href="../../css/user-form.css">
     <link rel="stylesheet" href="../../css/user-form-login.css">
+    <link rel="stylesheet" href="../../css/validation_form.css">
+    <link rel="stylesheet" href="../../css/validation_form_user_update.css">
     <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
     <script src="../../scripts/auth.js"></script>
+    <script src="../../scripts/fail-message.js"></script>
 </head>
 <body>
 
@@ -30,34 +38,39 @@
                 <form id="user_form" method="post" action="login?action=login">
                     <h3 id="h3_log">User Login Form</h3>
                     <h3 id="h3_reg" style="display: none">User Register Form</h3>
-
+                    <% UserValidation userValid = (UserValidation) request.getAttribute(VALIDATOR_USER.value());%>
+                    <% UserCredentialValidation credValid = (UserCredentialValidation) request.getAttribute(VALIDATOR_USER_CREDENTIAL.value());%>
                     <section id="sections">
                         <section class="section">
                             <div class="input_container">
-                                <input id="login" type="text" name="login" placeholder=" " value="USER_1"/>
+                                <input id="login" class="<%= credValid == null ? "" : credValid.isValid(PARAM_LOGIN) ? "" : "fail_field"%>" type="text" name="login" placeholder=" " value="USER_1"/>
                                 <label>login</label>
                             </div>
-                            <div class="input_container">
-                                <input id="password" type="password" name="password" placeholder=" " value="1"/>
+                            <div class="input_container log">
+                                <input id="password" class="<%= credValid == null ? "" : credValid.isValid(PARAM_PASSWORD) ? "" : "fail_field"%>" type="password" name="password" placeholder=" " value="111"/>
                                 <label>password</label>
                             </div>
                             <div class="input_container reg">
-                                <input id="password-repeat" type="password" name="password_repeat" placeholder=" "/>
+                                <input id="password_new" class="<%= credValid == null ? "" : credValid.isValid(PARAM_PASSWORD_NEW) ? "" : "fail_field"%>" type="password" name="password" placeholder=" "/>
+                                <label>password</label>
+                            </div>
+                            <div class="input_container reg">
+                                <input id="password_repeat" class="<%= credValid == null ? "" : credValid.isValid(PARAM_PASSWORD_REPEAT) ? "" : "fail_field"%>" type="password" name="password_repeat" placeholder=" "/>
                                 <label>repeat password</label>
                             </div>
                         </section>
 
                         <section class="section reg" style="display: none">
                             <div class="input_container">
-                                <input id="nickname" type="text" name="name" placeholder=" "/>
+                                <input id="nickname" class="<%= userValid == null ? "" : userValid.isValid(PARAM_NAME) ? "" : "fail_field"%>" type="text" name="name" placeholder=" "/>
                                 <label>nickname</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_min" type="number" name="calories_min" placeholder=" "/>
+                                <input id="calories_min" class="<%= userValid == null ? "" : userValid.isValid(PARAM_CALORIES_MIN) ? "" : "fail_field"%>" type="number" name="calories_min" placeholder=" "/>
                                 <label>calories min</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_max" type="number" name="calories_max" placeholder=" "/>
+                                <input id="calories_max" class="<%= userValid == null ? "" : userValid.isValid(PARAM_CALORIES_MAX) ? "" : "fail_field"%>" type="number" name="calories_max" placeholder=" "/>
                                 <label>calories max</label>
                             </div>
                         </section>
@@ -65,6 +78,14 @@
                     </section>
 
                     <section id="under_form">
+                        <section id="fail_message_section">
+                            <div id="fail_area" style="display: none">
+                                <% String message_user = userValid == null ? null : userValid.resultMessage();%>
+                                <%= message_user != null ? "<p class=\"fail_message_text\">" + message_user + "</p>" : "" %>
+                                <% String message_cred = credValid == null ? null : credValid.resultMessage();%>
+                                <%= message_cred != null ? "<p class=\"fail_message_text\">" + message_cred + "</p>" : "" %>
+                            </div>
+                        </section>
                         <section id="buttons">
                             <button class="reg" style="display: none" name="submit" type="submit">register</button>
                             <button class="log" name="submit" type="submit">login</button>

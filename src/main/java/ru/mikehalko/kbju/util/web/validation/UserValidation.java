@@ -1,9 +1,11 @@
 package ru.mikehalko.kbju.util.web.validation;
 
 
-import ru.mikehalko.kbju.web.constant.UserParams;
+import ru.mikehalko.kbju.web.constant.Constant;
+import ru.mikehalko.kbju.web.constant.attribute.OtherAttribute;
+import ru.mikehalko.kbju.web.constant.attribute.UserAttribute;
 
-import static ru.mikehalko.kbju.web.constant.UserParams.*;
+import static ru.mikehalko.kbju.web.constant.attribute.UserAttribute.*;
 
 public class UserValidation implements Validation {
     private static final String SEPARATOR = ";\n";
@@ -31,6 +33,10 @@ public class UserValidation implements Validation {
     private boolean valid = true;
     private final FailFields failFields = new FailFields();
 
+    @Override
+    public Constant attribute() {
+        return OtherAttribute.VALIDATOR_USER;
+    }
     @Override
     public void catchEx(String field, Exception exception) {
         createMessageIfNull();
@@ -78,7 +84,7 @@ public class UserValidation implements Validation {
         }
     }
 
-    public void invalid(UserParams field) {
+    public void invalid(UserAttribute field) {
         createMessageIfNull();
         invalid();
         failFields.invalid(field);
@@ -96,17 +102,17 @@ public class UserValidation implements Validation {
         return !isValid();
     }
 
-    public boolean isValid(UserParams field) {
+    public boolean isValid(UserAttribute field) {
         return failFields.isValid(field);
     }
 
-    public boolean isNoValid(UserParams field) {
+    public boolean isNoValid(UserAttribute field) {
         return failFields.isNoValid(field);
     }
 
 
     public String resultMessage() {
-        return message.toString();
+        return message != null ? message.toString() : "";
     }
 
     private void createMessageIfNull() {
@@ -124,9 +130,5 @@ public class UserValidation implements Validation {
 
     private void appendWithSeparator(String text) {
         message.append(text).append(SEPARATOR);
-    }
-
-    public static void main(String[] args) {
-
     }
 }

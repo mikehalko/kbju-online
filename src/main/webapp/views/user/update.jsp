@@ -1,5 +1,9 @@
 <%@ page import="ru.mikehalko.kbju.util.web.validation.UserValidation" %>
-<%@ page import="ru.mikehalko.kbju.web.constant.UserParams" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserAttribute.*" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*" %>
+<%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidation" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialAttribute.PARAM_PASSWORD_NEW" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialAttribute.*" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -8,11 +12,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0">
     <title>Update meal</title>
-    <link rel="stylesheet" href="/css/site.css">
-    <link rel="stylesheet" href="/css/miniprofile.css">
-    <link rel="stylesheet" href="/css/create.css">
-    <link rel="stylesheet" href="/css/user-form.css">
-    <link rel="stylesheet" href="/css/validation_form.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/miniprofile.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/create.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user-form.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/validation_form.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/validation_form_user_update.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/inactive.css">
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+    <script src="../../scripts/update-user.js"></script>
+    <script src="../../scripts/fail-message.js"></script>
 </head>
 <body>
 
@@ -30,52 +39,74 @@
 
             <section class="user_form">
                 <jsp:useBean id="user_edit" type="ru.mikehalko.kbju.model.user.User" scope="request"/>
-                <form id="create_user" method="post" action="">
+                <form id="update_user" method="post" action="user?action=update">
                     <h3>User Edit Form</h3>
-                    <% UserValidation valid = (UserValidation) request.getAttribute("validator");%>
+                    <%
+                        UserValidation userValid = (UserValidation) request.getAttribute(VALIDATOR_USER.value());
+                        UserCredentialValidation credValid = (UserCredentialValidation) request.getAttribute(VALIDATOR_USER_CREDENTIAL.value());
+                        boolean userInvalid = userValid != null;
+                        boolean credentialInvalid = credValid != null;
+                        String messageUser = !userInvalid ? null : userValid.resultMessage();
+                        String messageCredential = !credentialInvalid ? null : credValid.resultMessage();
+
+                        String nicknameClass = userInvalid && userValid.isNoValid(PARAM_NAME) ? "fail_field" : "";
+                        String caloriesMinClass = userInvalid && userValid.isNoValid(PARAM_CALORIES_MIN) ? "fail_field" : "";
+                        String caloriesMaxClass = userInvalid && userValid.isNoValid(PARAM_CALORIES_MAX) ? "fail_field" : "";
+
+                        String passwordOld = credentialInvalid && credValid.isNoValid(PARAM_PASSWORD_OLD) ? "fail_field" : "";
+                        String passwordNew = credentialInvalid && credValid.isNoValid(PARAM_PASSWORD_NEW) ? "fail_field" : "";
+                        String passwordRepeat = credentialInvalid && credValid.isNoValid(PARAM_PASSWORD_REPEAT) ? "fail_field" : "";
+                    %>
                     <input type="hidden" name="user_id" value="${user_edit.id}">
 
                     <section id="sections">
                         <section class="section">
                             <div class="input_container">
-                                <input id="nickname" class="<%= valid == null ? "" : valid.isValid(UserParams.PARAM_NAME) ? "" : "fail_field"%>" type="text" name="name" placeholder=" " value="${user_edit.name}" required/>
-                                <label>nickname</label>
+                                <input id="nickname" class="user_update <%= nicknameClass%>" type="text" name="name" placeholder=" " value="${user_edit.name}" required/>
+                                <label class="user_update">nickname</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_min" class="<%= valid == null ? "" : valid.isValid(UserParams.PARAM_CALORIES_MIN) ? "" : "fail_field"%>" type="number" name="calories_min" placeholder=" " value="${user_edit.caloriesMin}"/>
-                                <label>calories min</label>
+                                <input id="calories_min" class="user_update <%= caloriesMinClass%>" type="number" name="calories_min" placeholder=" " value="${user_edit.caloriesMin}"/>
+                                <label class="user_update">calories min</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_max" class="<%= valid == null ? "" : valid.isValid(UserParams.PARAM_CALORIES_MAX) ? "" : "fail_field"%>" type="number" name="calories_max" placeholder=" " value="${user_edit.caloriesMax}"/>
-                                <label>calories max</label>
+                                <input id="calories_max" class="user_update <%= caloriesMaxClass%>" type="number" name="calories_max" placeholder=" " value="${user_edit.caloriesMax}"/>
+                                <label class="user_update">calories max</label>
                             </div>
                         </section>
 
 <%--                        TODO не работает    --%>
                         <section class="section">
+                            <%--                        TODO login положить скрыто?    --%>
                             <div class="input_container">
-                                <input id="password-old" type="password" name="password" placeholder=" "/>
-                                <label>old password</label>
+                                <input id="password-old" class="credential_update <%= passwordOld%>" type="password" name="password_old" placeholder=" "/>
+                                <label class="credential_update">old password</label>
                             </div>
                             <div class="input_container">
-                                <input id="password-new" type="password" name="password_new" placeholder=" "/>
-                                <label>new password</label>
+                                <input id="password-new" class="credential_update <%= passwordNew%>" type="password" name="password_new" placeholder=" "/>
+                                <label class="credential_update">new password</label>
                             </div>
                             <div class="input_container">
-                                <input id="password-repeat" type="password" name="password_repeat" placeholder=" "/>
-                                <label>repeat password</label>
+                                <input id="password-repeat" class="credential_update <%= passwordRepeat%>" type="password" name="password_repeat" placeholder=" "/>
+                                <label class="credential_update">repeat password</label>
                             </div>
                         </section>
 
                     </section>
 
                     <section id="under_form">
+                        <section id="fail_message_section">
+                            <div id="fail_area" style="display: none">
+                                <%= messageUser != null ? "<p class=\"fail_message_text\">" + messageUser + "</p>" : "" %>
+                                <%= messageCredential != null ? "<p class=\"fail_message_text\">" + messageCredential + "</p>" : "" %>
+                            </div>
+                        </section>
                         <section id="buttons">
                             <button name="submit" type="submit">save</button>
                             <button onclick="window.history.back()" type="button">cancel</button> <!-- // TODO если ошибка - вернет не туда -->
+                            <input id="switch_checkbox" type="checkbox" name="switch_checkbox" <%= credentialInvalid ? "checked" : ""%>/>
+                            <label for="switch_checkbox">change password (only)</label>
                         </section>
-                        <% String message = valid != null ? valid.resultMessage() : null;%>
-                        <%= message != null ? "<p class=\"fail_message\">" + message + "</p>" : "" %>
                     </section>
                 </form>
             </section>

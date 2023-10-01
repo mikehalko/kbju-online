@@ -1,0 +1,7 @@
+input.inactive {
+    background: rgba(55, 57, 59, 0.5) !important;
+}
+
+.inactive {
+    color: rgba(55, 57, 59, 0.2) !important;
+}

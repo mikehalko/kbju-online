@@ -1,5 +1,5 @@
 package ru.mikehalko.kbju.web.constant;
 
-public interface Params {
+public interface Constant {
     String value();
 }

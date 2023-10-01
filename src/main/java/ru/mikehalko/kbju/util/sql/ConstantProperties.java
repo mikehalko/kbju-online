@@ -34,7 +34,7 @@ public class ConstantProperties {
     public static String MEAL_CALORIES;
 
     public static String USER_CREDENTIAL_USER_ID;
-    public static String USER_CREDENTIAL_NAME;
+    public static String USER_CREDENTIAL_LOGIN;
     public static String USER_CREDENTIAL_PASSWORD;
 
     private static final Logger log = LoggerFactory.getLogger(ConstantProperties.class);
@@ -104,9 +104,9 @@ public class ConstantProperties {
 
     public static void initDBCredentialColumns(Properties properties) {
         USER_CREDENTIAL_USER_ID = properties.getProperty("USER_CREDENTIAL.col.user_id");
-        USER_CREDENTIAL_NAME = properties.getProperty("USER_CREDENTIAL.col.name");
+        USER_CREDENTIAL_LOGIN = properties.getProperty("USER_CREDENTIAL.col.name");
         USER_CREDENTIAL_PASSWORD = properties.getProperty("USER_CREDENTIAL.col.password");
-        checkNull(USER_CREDENTIAL_USER_ID, USER_CREDENTIAL_NAME, USER_CREDENTIAL_PASSWORD);
+        checkNull(USER_CREDENTIAL_USER_ID, USER_CREDENTIAL_LOGIN, USER_CREDENTIAL_PASSWORD);
     }
 
     private static void checkNull(String tag, String... constants) {

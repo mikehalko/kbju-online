@@ -40,7 +40,7 @@
     margin-bottom: 40px;
     padding: 0 0.3vw;
 
-    background: rgba(255, 255, 255, 0.06); /* todo убрать? */
+    background: rgba(255, 255, 255, 0.06);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.27);
 }
 .scroll-table {

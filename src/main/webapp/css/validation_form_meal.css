@@ -1,0 +1,10 @@
+#fail_message_section {
+    width: 63%;
+    height: 10vh;
+    margin: -9vh 2% 2vh 35%;
+}
+
+#fail_message_section #fail_area {
+    width: 100%;
+    height: 10vh;
+}

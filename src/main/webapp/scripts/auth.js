@@ -41,10 +41,10 @@ function switchForm(form, checkable, timeout_milli) {
 
 function loginStart() {
     $(".section").css("margin-left", marginLeftValueLogin);
-    $("#h3_log").show()
+    $("#h3_log").show();
     $(".log").show();
     $(".reg").hide();
-    $("#h3_reg").hide()
+    $("#h3_reg").hide();
 }
 
 function login() {
@@ -55,8 +55,8 @@ function login() {
 }
 
 function register() {
-    $("#h3_reg").show()
-    $("#h3_log").hide()
+    $("#h3_reg").show();
+    $("#h3_log").hide();
     $(".reg").show(animationMillis);
     $(".log").hide(animationMillis);
 }

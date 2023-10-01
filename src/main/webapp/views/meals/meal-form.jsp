@@ -1,8 +1,7 @@
 <%@ page import="ru.mikehalko.kbju.util.DateTimeUtil" %>
 <%@ page import="ru.mikehalko.kbju.util.web.validation.MealValidation" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.MealParams.PARAM_DATE_TIME" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.MealParams.PARAM_DESCRIPTION" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.MealParams.*" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.MealAttribute.*" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.VALIDATOR_MEAL" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -17,8 +16,10 @@
   <link rel="stylesheet" href="../../css/create.css">
   <link rel="stylesheet" href="../../css/meal-form.css">
   <link rel="stylesheet" href="../../css/validation_form.css">
+  <link rel="stylesheet" href="../../css/validation_form_meal.css">
   <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
   <script src="../../scripts/meal-form.js"></script>
+  <script src="../../scripts/fail-message.js"></script>
 </head>
 <body>
 <jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo" scope="request"/>
@@ -38,7 +39,7 @@
         <form id="create_meal" method="post" action="">
           <h3 class="create">Meal Create Form</h3>
           <h3 class="edit">Meal Edit Form</h3>
-          <% MealValidation valid = (MealValidation) request.getAttribute("validator");%>
+          <% MealValidation valid = (MealValidation) request.getAttribute(VALIDATOR_MEAL.value());%>
           <input id="meal_id" type="hidden" name="id" value="${meal.id}">
           <section id="sections">
             <section class="section">
@@ -78,14 +79,20 @@
             </section>
           </section>
 
-          <section id="under_form">
+          <section id="over_form">
+
+              <section id="fail_message_section">
+                <div id="fail_area" style="display: none">
+                  <% String message = valid == null ? null : valid.resultMessage();%>
+                  <%= message != null ? "<p class=\"fail_message_text\">" + message + "</p>" : "" %>
+                </div>
+              </section>
+
             <section id="buttons">
               <button name="submit" type="submit" id="meal-submit">save</button>
               <button onclick="window.history.back()" type="button">cancel</button> <!-- // TODO если ошибка - вернет не туда -->
             </section>
             <p id="note">* - enter "0" calories, then the calculation will be made based on the amount of proteins, fats and carbohydrates.</p>
-            <% String message = valid == null ? null : valid.resultMessage();%>
-            <%= message != null ? "<p class=\"fail_message\">" + message + "</p>" : "" %>
           </section>
         </form>
       </section>

@@ -1,7 +1,10 @@
 package ru.mikehalko.kbju.util.web.validation;
 
-import ru.mikehalko.kbju.web.constant.MealParams;
-import static ru.mikehalko.kbju.web.constant.MealParams.*;
+import ru.mikehalko.kbju.web.constant.Constant;
+import ru.mikehalko.kbju.web.constant.attribute.MealAttribute;
+import ru.mikehalko.kbju.web.constant.attribute.OtherAttribute;
+
+import static ru.mikehalko.kbju.web.constant.attribute.MealAttribute.*;
 
 import java.time.LocalDateTime;
 
@@ -31,12 +34,17 @@ public class MealValidation implements Validation {
     private final FailFields failFields = new FailFields();
 
     @Override
+    public Constant attribute() {
+        return OtherAttribute.VALIDATOR_MEAL;
+    }
+
+    @Override
     public void catchEx(String field, Exception exception) {
         createMessageIfNull();
         message.append(exception.getClass().getName()).append(" for field ").append(field).append(SEPARATOR);
     }
 
-    public void id(MealParams param, int id) { // TODO УБРАТЬ ПАРАМЕТР!
+    public void id(MealAttribute param, int id) { // TODO УБРАТЬ ПАРАМЕТР!
         if (id < ID_MIN) {
             createMessageIfNull();
             invalid();
@@ -45,11 +53,11 @@ public class MealValidation implements Validation {
         }
     }
 
-    public void dateTime(MealParams param, LocalDateTime dateTime) {
+    public void dateTime(MealAttribute param, LocalDateTime dateTime) {
         // ...
     }
 
-    public void description(MealParams param, String description) { // TODO УБРАТЬ ПАРАМЕТР!
+    public void description(MealAttribute param, String description) { // TODO УБРАТЬ ПАРАМЕТР!
         if (description.length() < DESCRIPTION_MIN_LENGTH) {
             createMessageIfNull();
             invalid();
@@ -62,7 +70,7 @@ public class MealValidation implements Validation {
         }
     }
 
-    public void params(MealParams[] params, int[] values) {
+    public void params(MealAttribute[] params, int[] values) {
         if (params.length != values.length) throw new RuntimeException("params length cant be different from values length");
         for (int i = 0; i < params.length; i++) {
             if (values[i] < PARAM_MIN || values[i] > PARAM_MAX) {
@@ -90,21 +98,21 @@ public class MealValidation implements Validation {
         return !isValid();
     }
 
-    public boolean isValid(MealParams field) {
+    public boolean isValid(MealAttribute field) {
         return failFields.isValid(field);
     }
 
-    public boolean isNoValid(MealParams field) {
+    public boolean isNoValid(MealAttribute field) {
         return failFields.isNoValid(field);
     }
 
-    public void invalid(MealParams field) {
+    public void invalid(MealAttribute field) {
         failFields.invalid(field);
     }
 
 
     public String resultMessage() {
-        return message.toString();
+        return message != null ? message.toString() : "";
     }
 
     private void createMessageIfNull() {
@@ -122,9 +130,5 @@ public class MealValidation implements Validation {
 
     private void appendWithSeparator(String text) {
         message.append(text).append(SEPARATOR);
-    }
-
-    public static void main(String[] args) {
-
     }
 }

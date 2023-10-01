@@ -1,13 +1,15 @@
-.fail_message {
-    transition: all 1000ms;
-    background: #8d5454 !important;
+#fail_message_section {
+    font-size: 13px;
+}
+
+#fail_message_section #fail_area .fail_message_text {
+    background: #a46464 !important;
+    display: inline-block;
+    padding: 1px 5px;
     word-wrap: anywhere;
     border-radius: 10px;
-
-    margin: 2px 10px 20px 10px;
-    padding: 4px 3px 4px 3px;
 }
 
 .fail_field  {
-    background: #8d5454 !important;
+    background: #a46464 !important;
 }

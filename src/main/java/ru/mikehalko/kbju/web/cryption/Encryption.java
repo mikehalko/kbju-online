@@ -13,7 +13,7 @@ public class Encryption {
         return Base64.getEncoder().encodeToString(hash);
     }
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws NoSuchAlgorithmException { // TODO убрать
         System.out.println(hashing("1"));
         System.out.println(hashing("2"));
         System.out.println(hashing("3"));
