@@ -42,20 +42,21 @@ public class RequestParser {
         try {
             String result = Objects.requireNonNull(request.getParameter(param.value()));
             if (!canBeEmpty) {
-                checkEmpty(result, validation, param.value());
+                checkEmpty(result, validation, param);
                 return Integer.parseInt(result);
             } else {
                 return result.isEmpty() ? 0 : Integer.parseInt(result);
             }
         } catch (NumberFormatException e) {
             if (validation != null) {
-                validation.catchEx(param.value(), e);
+                validation.catchEx(param, e);
                 return 0;
             } else {
                 throw e;
             }
         }
     }
+
 
     public static String parseString(HttpServletRequest request, Constant param) throws NullPointerException  {
         return parseString(request, param, true, null);
@@ -68,32 +69,33 @@ public class RequestParser {
     public static String parseString(HttpServletRequest request, Constant param, boolean canBeEmpty, Validation validation) throws ParamIsEmptyException, NullPointerException  {
         String result = Objects.requireNonNull(request.getParameter(param.value()));
         if (!canBeEmpty) {
-            checkEmpty(result, validation, param.value());
+            checkEmpty(result, validation, param);
         }
         return result;
     }
 
-    public static LocalDateTime parseLocalDateTime(HttpServletRequest request, MealAttribute param) throws ParamIsEmptyException, NullPointerException {
-        return parseLocalDateTime(request, param, true, null);
+
+    public static LocalDateTime localDateTime(HttpServletRequest request, MealAttribute param) throws ParamIsEmptyException, NullPointerException {
+        return localDateTime(request, param, true, null);
     }
 
-    public static LocalDateTime parseLocalDateTime(HttpServletRequest request, MealAttribute param, boolean canBeEmpty) throws ParamIsEmptyException, NullPointerException {
-        return parseLocalDateTime(request, param, canBeEmpty, null);
+    public static LocalDateTime localDateTime(HttpServletRequest request, MealAttribute param, boolean canBeEmpty) throws ParamIsEmptyException, NullPointerException {
+        return localDateTime(request, param, canBeEmpty, null);
     }
 
-    public static LocalDateTime parseLocalDateTime(HttpServletRequest request, MealAttribute param, boolean canBeEmpty, Validation validation) throws ParamIsEmptyException, NullPointerException {
+    public static LocalDateTime localDateTime(HttpServletRequest request, MealAttribute param, boolean canBeEmpty, Validation validation) throws ParamIsEmptyException, NullPointerException {
         try{
             String dateTime = Objects.requireNonNull(request.getParameter(param.value()));
 
             if (!canBeEmpty) {
-                checkEmpty(dateTime, validation, param.value());
+                checkEmpty(dateTime, validation, param);
                 return LocalDateTime.parse(dateTime);
             } else {
                 return dateTime.isEmpty() ? LocalDateTime.MIN : LocalDateTime.parse(dateTime); // not safe
             }
         } catch (NumberFormatException e) {
             if (validation != null) {
-                validation.catchEx(param.value(), e);
+                validation.catchEx(param, e);
                 return LocalDateTime.MIN;
             } else {
                 throw e;
@@ -102,9 +104,9 @@ public class RequestParser {
     }
 
 
-    public static Meal parseMeal(HttpServletRequest request, User user) {
+    public static Meal meal(HttpServletRequest request, User user) {
         int id = parseInt(request, MealAttribute.PARAM_ID);
-        LocalDateTime dateTime = parseLocalDateTime(request, MealAttribute.PARAM_DATE_TIME);
+        LocalDateTime dateTime = localDateTime(request, MealAttribute.PARAM_DATE_TIME);
         String description = parseString(request, MealAttribute.PARAM_DESCRIPTION);
         int mass = parseInt(request, MealAttribute.PARAM_MASS);
         int proteins = parseInt(request, MealAttribute.PARAM_PROTEINS);
@@ -115,9 +117,9 @@ public class RequestParser {
         return createMeal(id, user, dateTime, mass, description, proteins, fats, carbohydrates, calories);
     }
 
-    public static Meal parseMealValid(HttpServletRequest request, User user, @NotNull MealValidation validation) {
+    public static Meal meal(HttpServletRequest request, User user, @NotNull MealValidation validation) {
         int id = parseInt(request, MealAttribute.PARAM_ID, validation.ID_EMPTY, validation);
-        LocalDateTime dateTime = parseLocalDateTime(request, MealAttribute.PARAM_DATE_TIME, validation.DATETIME_EMPTY, validation);
+        LocalDateTime dateTime = localDateTime(request, MealAttribute.PARAM_DATE_TIME, validation.DATETIME_EMPTY, validation);
         String description = parseString(request, MealAttribute.PARAM_DESCRIPTION, validation.DESCRIPTION_EMPTY, validation);
         int mass = parseInt(request, MealAttribute.PARAM_MASS, validation.MASS_EMPTY, validation);
         int proteins = parseInt(request, MealAttribute.PARAM_PROTEINS, validation.PROTEINS_EMPTY, validation);
@@ -130,9 +132,9 @@ public class RequestParser {
             return null;
         }
 
-        validation.id(MealAttribute.PARAM_ID, id);
-        validation.dateTime(MealAttribute.PARAM_DATE_TIME, dateTime);
-        validation.description(MealAttribute.PARAM_DESCRIPTION, description);
+        validation.id(id);
+        validation.dateTime(dateTime);
+        validation.description(description);
         validation.params(
                 new MealAttribute[]{MealAttribute.PARAM_MASS, MealAttribute.PARAM_PROTEINS, MealAttribute.PARAM_FATS, MealAttribute.PARAM_CARBOHYDRATES, MealAttribute.PARAM_CALORIES},
                 new int[]{mass, proteins, fats, carbohydrates, calories});
@@ -148,7 +150,7 @@ public class RequestParser {
         return result;
     }
 
-    public static User parseUserValid(HttpServletRequest request, @NotNull UserValidation validation) {
+    public static User user(HttpServletRequest request, @NotNull UserValidation validation) {
         int id = parseInt(request, UserAttribute.PARAM_USER_ID, validation.USER_ID_EMPTY, validation);
         String name = parseString(request, UserAttribute.PARAM_NAME, validation.NAME_EMPTY, validation);
         int caloriesMin = parseInt(request, UserAttribute.PARAM_CALORIES_MIN, validation.CALORIES_MIN_EMPTY, validation);
@@ -173,20 +175,16 @@ public class RequestParser {
         return result;
     }
 
-    public static UserCredential parseUserCredentialUpdateValid(HttpServletRequest request, User owner, @NotNull UserCredentialValidation validation) {
-        String password = parseString(request, UserCredentialAttribute.PARAM_PASSWORD_NEW, validation.PASSWORD_EMPTY, validation);
-        String passwordRepeat = parseString(request, UserCredentialAttribute.PARAM_PASSWORD_REPEAT, validation.PASSWORD_REPEAT_EMPTY, validation);
-
+    public static UserCredential credentialNew(HttpServletRequest request, User owner, @NotNull UserCredentialValidation validation) {
+        String login = parseString(request, UserCredentialAttribute.PARAM_LOGIN, validation.LOGIN_EMPTY, validation);
         if (validation.isNotValid()) {
-            log.debug("user credential parsing with validation has exceptions, return null");
-            return null;
+            log.debug("\"{}\" parsing (with validation) has exceptions", UserCredentialAttribute.PARAM_LOGIN);
         }
+        UserCredential result = credentialPasswordWithRepeat(request, owner, validation);
+        if (result == null) return null;
+        result.setLogin(login);
+        validation.login(login);
 
-//        validation.login(login);
-        validation.password(password);
-        validation.passwordRepeatEquals(password, passwordRepeat);
-
-        UserCredential result = createCredential(owner.getId(), null, password);
         if (validation.isNotValid()) {
             log.debug("credential parsing with validation has invalid fields; return INVALID credential");
         } else {
@@ -196,11 +194,36 @@ public class RequestParser {
         return result;
     }
 
+    public static UserCredential passwordWithRepeat(HttpServletRequest request, User owner, @NotNull UserCredentialValidation validation) {
+        UserCredential result = credentialPasswordWithRepeat(request, owner, validation);
+        if (validation.isNotValid()) {
+            log.debug("credential parsing with validation has invalid fields; return INVALID credential");
+        } else {
+            log.debug("no one invalid fields");
+        }
+        return result;
+    }
+
+    private static UserCredential credentialPasswordWithRepeat(HttpServletRequest request, User owner, @NotNull UserCredentialValidation validation) {
+        String password = parseString(request, UserCredentialAttribute.PARAM_PASSWORD_NEW, validation.PASSWORD_EMPTY, validation);
+        String passwordRepeat = parseString(request, UserCredentialAttribute.PARAM_PASSWORD_REPEAT, validation.PASSWORD_REPEAT_EMPTY, validation);
+
+        if (validation.isNotValid()) {
+            log.debug("\"{}\" \"{}\" parsing (with validation) has exceptions, return null",
+                    UserCredentialAttribute.PARAM_PASSWORD_NEW, UserCredentialAttribute.PARAM_PASSWORD_REPEAT);
+            return null;
+        }
+        validation.password(password);
+        validation.passwordRepeatEquals(password, passwordRepeat);
+        return createCredential(owner, null, password);
+    }
+
+
     private static void checkEmpty(String str) throws ParamIsEmptyException {
         if (str.isEmpty()) throw new ParamIsEmptyException();
     }
 
-    private static void checkEmpty(String str, Validation validation, String param) throws ParamIsEmptyException {
+    private static void checkEmpty(String str, Validation validation, Constant param) throws ParamIsEmptyException {
         try {
             checkEmpty(str);
         } catch (ParamIsEmptyException e) {

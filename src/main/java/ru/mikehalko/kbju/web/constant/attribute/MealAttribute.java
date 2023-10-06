@@ -23,6 +23,8 @@ public enum MealAttribute implements Constant {
         return attributeValue;
     }
 
+    // TODO перевод значения метод  
+
     @Override
     public String toString() {
         return attributeValue;

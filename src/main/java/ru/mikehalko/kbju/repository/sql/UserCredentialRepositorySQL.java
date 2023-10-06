@@ -160,6 +160,33 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
     }
 
     @Override
+    public boolean isUnique(String login) {
+        log.debug("isUnique login={}", login);
+
+        // select count("name") from "user_credential" where "name" = 'lol';
+        String loginUniqueSQL = String.format(
+                "SELECT COUNT(%1$s) FROM \"%2$s\" WHERE %3$s = '%4$s';",
+                USER_CREDENTIAL_LOGIN, USER_CREDENTIAL_TABLE, // 1 2
+                USER_CREDENTIAL_LOGIN, login // 3 4
+        );
+
+
+        log.debug("SQL = {}", loginUniqueSQL);
+
+        int count = 0;
+        try (ResultSet rs = executeQuery(connection, loginUniqueSQL)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            log.error("GET INT AFTER SELECT FAIL"); // TODO убрать и сделать exception
+            throw new RuntimeException(e);
+        }
+
+        return count == 0;
+    }
+
+    @Override
     public Connection getConnection() {
         return this.connection;
     }

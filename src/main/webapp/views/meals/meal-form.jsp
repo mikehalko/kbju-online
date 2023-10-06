@@ -31,6 +31,7 @@
     <a style="display: none" class="edit"> >> </a><a style="display: none" class="edit link" href="?action=get&id=${meal.id}">the meal</a><a style="display: none" class="edit"> >> </a><a href="" class="edit link" style="display: none">edit meal</a>
   </div>
 </div>
+<%--                                TODO "name" значения констант --%>
 
 <div id="main_and_right_panel">
   <div id="block_main">

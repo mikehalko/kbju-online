@@ -3,6 +3,8 @@
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserAttribute.*" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*" %>
 <%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidation" %>
+<%@ page import="ru.mikehalko.kbju.model.user.User" %>
+<%@ page import="ru.mikehalko.kbju.util.web.Util" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -21,7 +23,26 @@
     <script src="../../scripts/fail-message.js"></script>
 </head>
 <body>
+<%
+    UserValidation userValid = (UserValidation) request.getAttribute(VALIDATOR_USER.value());
+    UserCredentialValidation credValid = (UserCredentialValidation) request.getAttribute(VALIDATOR_USER_CREDENTIAL.value());
+    boolean userInvalid = userValid != null;
+    boolean credentialInvalid = credValid != null;
 
+    String userName = "";
+    int calMin = 0;
+    int calMax = 0;
+    if (userInvalid) {
+        User user = (User) Util.getAttribute(request, USER);
+        userName = user.getName();
+        calMin = user.getCaloriesMin();
+        calMax = user.getCaloriesMax();
+    }
+    String login = "";
+    if (credentialInvalid) {
+        login = Util.getAttributeString(request, PARAM_LOGIN);
+    }
+%>
 
 <div id="block_top_panel">
     <div id="location_path">
@@ -38,20 +59,21 @@
                 <form id="user_form" method="post" action="login?action=login">
                     <h3 id="h3_log">User Login Form</h3>
                     <h3 id="h3_reg" style="display: none">User Register Form</h3>
-                    <% UserValidation userValid = (UserValidation) request.getAttribute(VALIDATOR_USER.value());%>
-                    <% UserCredentialValidation credValid = (UserCredentialValidation) request.getAttribute(VALIDATOR_USER_CREDENTIAL.value());%>
+
                     <section id="sections">
                         <section class="section">
                             <div class="input_container">
-                                <input id="login" class="<%= credValid == null ? "" : credValid.isValid(PARAM_LOGIN) ? "" : "fail_field"%>" type="text" name="login" placeholder=" " value="USER_1"/>
+                                <input id="id" class="" type="text" name="<%=PARAM_USER_ID%>" placeholder=" " value="0" hidden="hidden"/>
+<%--                                TODO "name" значения констант --%>
+                                <input id="login" class="<%= credValid == null ? "" : credValid.isValid(PARAM_LOGIN) ? "" : "fail_field"%>" type="text" name="login" placeholder=" " <%= credentialInvalid ? "value=\""+ login + "\"" : ""%>/>
                                 <label>login</label>
                             </div>
                             <div class="input_container log">
-                                <input id="password" class="<%= credValid == null ? "" : credValid.isValid(PARAM_PASSWORD) ? "" : "fail_field"%>" type="password" name="password" placeholder=" " value="111"/>
+                                <input id="password" class="<%= credValid == null ? "" : credValid.isValid(PARAM_PASSWORD) ? "" : "fail_field"%>" type="password" name="password" placeholder=" "/>
                                 <label>password</label>
                             </div>
                             <div class="input_container reg">
-                                <input id="password_new" class="<%= credValid == null ? "" : credValid.isValid(PARAM_PASSWORD_NEW) ? "" : "fail_field"%>" type="password" name="password" placeholder=" "/>
+                                <input id="password_new" class="<%= credValid == null ? "" : credValid.isValid(PARAM_PASSWORD_NEW) ? "" : "fail_field"%>" type="password" name="password_new" placeholder=" "/>
                                 <label>password</label>
                             </div>
                             <div class="input_container reg">
@@ -62,15 +84,15 @@
 
                         <section class="section reg" style="display: none">
                             <div class="input_container">
-                                <input id="nickname" class="<%= userValid == null ? "" : userValid.isValid(PARAM_NAME) ? "" : "fail_field"%>" type="text" name="name" placeholder=" "/>
+                                <input id="nickname" class="<%= userValid == null ? "" : userValid.isValid(PARAM_NAME) ? "" : "fail_field"%>" type="text" name="name" placeholder=" " <%= userInvalid ? "value=\""+ userName + "\"" : ""%>/>
                                 <label>nickname</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_min" class="<%= userValid == null ? "" : userValid.isValid(PARAM_CALORIES_MIN) ? "" : "fail_field"%>" type="number" name="calories_min" placeholder=" "/>
+                                <input id="calories_min" class="<%= userValid == null ? "" : userValid.isValid(PARAM_CALORIES_MIN) ? "" : "fail_field"%>" type="number" name="calories_min" placeholder=" " <%= userInvalid ? "value=\""+ calMin + "\"" : ""%>/>
                                 <label>calories min</label>
                             </div>
                             <div class="input_container">
-                                <input id="calories_max" class="<%= userValid == null ? "" : userValid.isValid(PARAM_CALORIES_MAX) ? "" : "fail_field"%>" type="number" name="calories_max" placeholder=" "/>
+                                <input id="calories_max" class="<%= userValid == null ? "" : userValid.isValid(PARAM_CALORIES_MAX) ? "" : "fail_field"%>" type="number" name="calories_max" placeholder=" " <%= userInvalid ? "value=\""+ calMax + "\"" : ""%>/>
                                 <label>calories max</label>
                             </div>
                         </section>
@@ -91,7 +113,7 @@
                             <button class="log" name="submit" type="submit">login</button>
                             <button onclick="window.history.back()" type="button">cancel</button>
                         </section>
-                        <p id="note"><input id="reg_checkbox" type="checkbox" name="checkboxname"/>
+                        <p id="note"><input id="reg_checkbox" type="checkbox" name="checkboxname" <%= credentialInvalid ? "checked" : ""%>/>
                             <label for="reg_checkbox">SIGN UP</label></p>
                     </section>
 

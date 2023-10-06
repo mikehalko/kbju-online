@@ -6,6 +6,7 @@ import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.repository.MealRepository;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.mikehalko.kbju.util.sql.ConnectDataBase.executeQuery;
@@ -135,7 +136,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
                 return null;
             }
             meal = parseMeal(rs);
-            meal.setUser(null); // TODO решить проблему архитектуры. Надо ли тащить пользователя или нет. Сделать UserMock?
+            meal.setUser(null); // !
         } catch (SQLException e) {
             throw new RuntimeException();
         }
@@ -149,35 +150,16 @@ public class MealRepositorySQL implements MealRepository, Connectable {
                 "SELECT * FROM \"%1$s\" WHERE %2$s = %3$d;",
                 MEAL_TABLE, USER_ID, userId
         );
-        String userSQL = String.format(
-                "SELECT * FROM \"%1$s\" WHERE %2$s = %3$d;",
-                USER_TABLE, USER_ID, userId
-        );
 
-        List<Meal> meals = null;
+        List<Meal> meals = new ArrayList<>();
         try (ResultSet rs = executeQuery(connection, mealsSQL);) {
-            meals = parseMeals(rs);
+            parseMealsInList(rs, meals);
             if (meals.isEmpty()) log.debug("result meals is empty");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        // TODO Надо ли тащить пользователя или нет
-        /*
-        User user = null;
-        try (ResultSet rs = executeQuery(userSQL);) {
-            rs.next(); // !
-            user = parseUser(rs, meals);
-            for (Meal meal : meals) {
-                meal.setUser(user);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-         */
-
-        log.debug("parsing meals result = {}", meals);
+        log.debug("selectAll result = {}", meals);
 
         return meals;
     }

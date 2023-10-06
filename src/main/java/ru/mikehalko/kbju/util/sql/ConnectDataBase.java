@@ -3,7 +3,11 @@ package ru.mikehalko.kbju.util.sql;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.repository.sql.Connectable;
+import ru.mikehalko.kbju.util.sql.exception.ConnectionPropertiesIncorrectException;
+import ru.mikehalko.kbju.util.sql.exception.DriverClassNotFoundException;
+import ru.mikehalko.kbju.util.sql.exception.PropertiesFileNotFoundException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 
@@ -64,13 +68,13 @@ public class ConnectDataBase {
             connection = ConnectDataBase.readPropertiesAndConnection(realPathDbProperties);
         } catch (IOException e) {
             log.error("wrong path db.properties or file not exist");
-            throw new RuntimeException(e); // TODO свой exception
+            throw new PropertiesFileNotFoundException(e);
         } catch (SQLException e) {
             log.error("wrong user, pass or url db");
-            throw new RuntimeException(e);
+            throw new ConnectionPropertiesIncorrectException(e);
         } catch (ClassNotFoundException e) {
             log.error("driver class db not found");
-            throw new RuntimeException(e);
+            throw new DriverClassNotFoundException(e);
         }
         return connection;
     }

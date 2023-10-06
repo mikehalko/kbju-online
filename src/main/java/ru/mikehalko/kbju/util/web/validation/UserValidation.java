@@ -9,10 +9,9 @@ import static ru.mikehalko.kbju.web.constant.attribute.UserAttribute.*;
 
 public class UserValidation implements Validation {
     private static final String SEPARATOR = ";\n";
-    public static final String MESSAGE_MUST_BE_HIGHER = "%s must be higher %s"; // TODO перевод
+    public static final String MESSAGE_MUST_BE_HIGHER = "%s must be higher %s";
     public static final String MESSAGE_MUST_BE_LOWER = "%s must be lower %s";
 
-    // TODO задействовать существующий enum
     public final boolean USER_ID_EMPTY = false;
     public final boolean NAME_EMPTY = false;
     public final boolean CALORIES_MIN_EMPTY = false;
@@ -38,9 +37,9 @@ public class UserValidation implements Validation {
         return OtherAttribute.VALIDATOR_USER;
     }
     @Override
-    public void catchEx(String field, Exception exception) {
+    public void catchEx(Constant field, Exception exception) {
         createMessageIfNull();
-        message.append(exception.getClass().getName()).append(" for field ").append(field).append(SEPARATOR);
+        message.append(exception.getClass().getName()).append(" for field ").append(field.value()).append(SEPARATOR);
     }
 
     public void id(int id) {
@@ -53,28 +52,28 @@ public class UserValidation implements Validation {
     public void name(String name) {
         if (name.length() < NAME_LENGTH_MIN) {
             invalid(PARAM_NAME);
-            appendMustBeHigher(PARAM_NAME.value(), name);
+            appendMustBeHigher(PARAM_NAME.value(), NAME_LENGTH_MIN);
         } else if (name.length() > NAME_LENGTH_MAX) {
             invalid(PARAM_NAME);
-            appendMustBeLower(PARAM_NAME.value(), name);
+            appendMustBeLower(PARAM_NAME.value(), NAME_LENGTH_MAX);
         }
     }
 
     public void calories(int min, int max) {
         if (min < CALORIES_MIN_MIN) {
             invalid(PARAM_CALORIES_MIN);
-            appendMustBeHigher(PARAM_CALORIES_MIN.value(), min);
+            appendMustBeHigher(PARAM_CALORIES_MIN.value(), CALORIES_MIN_MIN);
         } else if (min > CALORIES_MIN_MAX) {
             invalid(PARAM_CALORIES_MIN);
-            appendMustBeLower(PARAM_CALORIES_MIN.value(), min);
+            appendMustBeLower(PARAM_CALORIES_MIN.value(), CALORIES_MIN_MAX);
         }
 
         if (max < CALORIES_MAX_MIN) {
             invalid(PARAM_CALORIES_MAX);
-            appendMustBeHigher(PARAM_CALORIES_MAX.value(), max);
+            appendMustBeHigher(PARAM_CALORIES_MAX.value(), CALORIES_MAX_MIN);
         } else if (max > CALORIES_MAX_MAX) {
             invalid(PARAM_CALORIES_MAX);
-            appendMustBeLower(PARAM_CALORIES_MAX.value(), max);
+            appendMustBeLower(PARAM_CALORIES_MAX.value(), CALORIES_MAX_MAX);
         }
 
         if (!CALORIES_MIN_HIGHER_MAX && min > max) {

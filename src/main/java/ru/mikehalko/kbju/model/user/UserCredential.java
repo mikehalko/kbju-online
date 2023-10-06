@@ -3,12 +3,12 @@ package ru.mikehalko.kbju.model.user;
 import java.util.Objects;
 
 public class UserCredential {
-    private int userId;
+    private User owner;
     private String login;
     private String password;
 
-    public UserCredential(int userId) {
-        this.userId = userId;
+    public UserCredential(User owner) {
+        this.owner = owner;
     }
 
     public UserCredential(String login, String passwordHash) {
@@ -16,8 +16,8 @@ public class UserCredential {
         this.password = passwordHash;
     }
 
-    public UserCredential(int userId, String login, String password) {
-        this.userId = userId;
+    public UserCredential(User owner, String login, String password) {
+        this.owner = owner;
         this.login = login;
         this.password = password;
     }
@@ -39,11 +39,15 @@ public class UserCredential {
     }
 
     public int getUserId() {
-        return userId;
+        return owner.getId();
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public User getUser() {
+        return owner;
+    }
+
+    public void setUser(User owner) {
+        this.owner = owner;
     }
 
     @Override

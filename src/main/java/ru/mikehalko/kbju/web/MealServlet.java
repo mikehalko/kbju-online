@@ -2,7 +2,7 @@ package ru.mikehalko.kbju.web;
 
 
 import ru.mikehalko.kbju.model.meal.Meal;
-import ru.mikehalko.kbju.model.meal.Nutritionally;
+import ru.mikehalko.kbju.model.mock.MealToMock;
 import ru.mikehalko.kbju.repository.MealRepository;
 import ru.mikehalko.kbju.repository.sql.MealRepositorySQL;
 import ru.mikehalko.kbju.to.MealTo;
@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.mikehalko.kbju.util.web.RequestParser;
 import ru.mikehalko.kbju.util.web.validation.MealValidation;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 
@@ -24,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static ru.mikehalko.kbju.util.web.RequestParser.parseInt;
-import static ru.mikehalko.kbju.util.web.RequestParser.parseMealValid;
+import static ru.mikehalko.kbju.util.web.RequestParser.meal;
 import static ru.mikehalko.kbju.web.constant.attribute.MealAttribute.*;
 import static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
@@ -38,8 +39,7 @@ public class MealServlet extends HttpServlet {
     public static final String POST_REDIRECT_AFTER_CREATE_MEAL_ACTION_GET_ID = SERVLET_MEAL + "?" + ACTION + "=" + ACTION_GET + "&id=";
     public static final String GET_REDIRECT_AFTER_DELETE = SERVLET_MEAL.value();
 
-    public static final MealTo mockMealTo = new MealTo(new Nutritionally()); // TODO mock
-
+    public static final MealTo mockMealTo = new MealToMock();
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
     private static MealRepository repository;
 
@@ -76,7 +76,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case ACTION_CREATE:
                 log.debug("create forward");
-                setAttribute(request, MEAL, new MealTo());
+                setAttribute(request, MEAL, mockMealTo);
                 forward(request, response, GET_FORWARD_CREATE);
                 break;
             case ACTION_DELETE:
@@ -103,7 +103,7 @@ public class MealServlet extends HttpServlet {
 
         log.debug("doPost");
         MealValidation validation = new MealValidation();
-        Meal meal = parseMealValid(request, ServletSecurityUtil.getUserSession(request), validation);
+        Meal meal = RequestParser.meal(request, ServletSecurityUtil.getUserSession(request), validation);
         MealTo mealTo = meal != null ? MealsUtil.getTo(meal) : mockMealTo;
 
         if (validation.isNotValid()) {

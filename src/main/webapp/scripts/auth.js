@@ -8,6 +8,9 @@ let lockRadioButtonMillis = 800;
 let animationMillis = 200;
 let timeoutBeforeAnimationAfterMarginMillis = 300;
 
+let checkBoxSelector = "#reg_checkbox";
+let userFormSelector = "#user_form";
+
 function tempLock(checkable, millis) {
     checkable.attr('disabled', true);
     setTimeout(function () {
@@ -16,10 +19,11 @@ function tempLock(checkable, millis) {
 }
 
 $(function() {
-    loginStart();
-    $("#reg_checkbox").click(function(){
-        tempLock($("#reg_checkbox"), lockRadioButtonMillis);
-        switchForm($('#user_form'), this, timeoutBeforeAnimationAfterMarginMillis);
+    loginStart($(userFormSelector));
+
+    $(checkBoxSelector).click(function(){
+        tempLock($(checkBoxSelector), lockRadioButtonMillis);
+        switchForm($(userFormSelector), this, timeoutBeforeAnimationAfterMarginMillis);
     });
 });
 
@@ -39,12 +43,28 @@ function switchForm(form, checkable, timeout_milli) {
     }
 }
 
-function loginStart() {
-    $(".section").css("margin-left", marginLeftValueLogin);
-    $("#h3_log").show();
-    $(".log").show();
-    $(".reg").hide();
-    $("#h3_reg").hide();
+function loginStart(form) {
+    if ($(checkBoxSelector).is(":checked")) {
+        console.log("is checked");
+        $(".section").css("margin-left", marginLeftValueRegister);
+        $("#h3_log").hide();
+        $(".log").hide();
+        $(".reg").show();
+        $("#h3_reg").show();
+        form.attr('action', actionRegisterRelativePath);
+        console.log("form switched to \"register\"");
+    } else if (!$(checkBoxSelector).is(":checked")) {
+        console.log("isn't checked");
+        $(".section").css("margin-left", marginLeftValueLogin);
+        $("#h3_log").show();
+        $(".log").show();
+        $(".reg").hide();
+        $("#h3_reg").hide();
+        form.attr('action', actionLoginRelativePath);
+        console.log("form switched to \"login\"");
+    } else {
+        console.log("some bug")
+    }
 }
 
 function login() {

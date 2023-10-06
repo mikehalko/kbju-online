@@ -12,11 +12,4 @@ public class Encryption {
         byte[] hash = messageDigest.digest(password.getBytes());
         return Base64.getEncoder().encodeToString(hash);
     }
-
-    public static void main(String[] args) throws NoSuchAlgorithmException { // TODO убрать
-        System.out.println(hashing("1"));
-        System.out.println(hashing("2"));
-        System.out.println(hashing("3"));
-        System.out.println(hashing("reg"));
-    }
 }

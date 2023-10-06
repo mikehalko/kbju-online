@@ -8,23 +8,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class MealTo {
-    private int id;
-    private LocalDateTime dateTime;
-    private boolean excess;
-    private boolean shortage;
+    private final int id;
+    private final LocalDateTime dateTime;
+    private final boolean excess;
+    private final boolean shortage;
 
     private final int mass;
     private final String description;
     private final Nutritionally nutritionally;
 
-    public MealTo() {
-        this.mass = 0;
-        this.description = null;
-        this.nutritionally = new Nutritionally();
+    public MealTo(Nutritionally nutritionally) {
+        this.nutritionally = nutritionally;
         this.dateTime = LocalDateTime.now();
+        this.id = 0;
+        this.mass = 0;
+        this.description = "";
+        this.shortage = false;
+        this.excess = false;
     }
-
-    public MealTo(Nutritionally nutritionally){this.nutritionally = nutritionally; this.description="";this.mass=0;} // TODO убрать
 
     public MealTo(Meal meal, boolean shortage, boolean excess) {
         this.dateTime = meal.getDateTime();

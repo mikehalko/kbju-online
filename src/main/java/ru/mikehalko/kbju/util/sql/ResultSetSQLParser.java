@@ -7,7 +7,6 @@ import ru.mikehalko.kbju.model.meal.Nutritionally;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static ru.mikehalko.kbju.util.sql.ConstantProperties.*;
@@ -34,13 +33,10 @@ public class ResultSetSQLParser {
         return user;
     }
 
-    public static List<User> parseUsers(ResultSet rs) throws SQLException {
-        List<User> users = new ArrayList<>(); // TODO или принять в аргументах?
+    public static void parseUsersInList(ResultSet rs, List<User> contentList) throws SQLException {
         while (rs.next()) {
-            users.add(parseUser(rs));
+            contentList.add(parseUser(rs));
         }
-
-        return users;
     }
 
     public static Meal parseMeal(ResultSet rs) throws SQLException {
@@ -63,16 +59,15 @@ public class ResultSetSQLParser {
         return new Meal(id, setUser, dateTime, mass, description, nut);
     }
 
-    public static List<Meal> parseMeals(ResultSet rs) throws SQLException {
-        return parseMeals(rs, null);
+    public static List<Meal> parseMealsInList(ResultSet rs, List<Meal> contentList) throws SQLException {
+        return parseMealsInList(rs, contentList, null);
     }
-    public static List<Meal> parseMeals(ResultSet rs, User setUser) throws SQLException {
-        List<Meal> meals = new ArrayList<>(); // TODO или принять в аргументах?
+    public static List<Meal> parseMealsInList(ResultSet rs, List<Meal> contentList, User setUser) throws SQLException {
         while (rs.next()) {
-            meals.add(parseMeal(rs, setUser));
+            contentList.add(parseMeal(rs, setUser));
         }
 
-        return meals;
+        return contentList;
     }
 
     public static Nutritionally parseNut(ResultSet rs) throws SQLException {

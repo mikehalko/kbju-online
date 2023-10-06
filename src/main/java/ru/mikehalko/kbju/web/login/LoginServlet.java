@@ -11,10 +11,9 @@ import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
 import ru.mikehalko.kbju.util.web.RequestParser;
 import ru.mikehalko.kbju.util.web.validation.UserCredentialValidation;
+import ru.mikehalko.kbju.util.web.validation.UserValidation;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 import ru.mikehalko.kbju.web.cryption.Encryption;
-import ru.mikehalko.kbju.web.constant.attribute.UserCredentialAttribute;
-import ru.mikehalko.kbju.web.constant.attribute.UserAttribute;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -24,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 import static ru.mikehalko.kbju.util.web.RequestParser.parseString;
 import static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*;
@@ -35,13 +35,14 @@ public class LoginServlet extends HttpServlet {
     public static final String INDEX_HTML = "index.html";
 
     public static final String POST_REDIRECT_REGISTRATION = "/views/user/login";
-    public static final String POST_REDIRECT_LOGIN_FAIL = "/views/user/login.jsp";
     public static final String POST_REDIRECT_LOGIN_ACCESS = "meals";
-    public static final String POST_REDIRECT_UPDATE_CREDENTIAL = USER + "?" + ACTION + "=" + ACTION_GET;
+    public static final String POST_REDIRECT_UPDATE_CREDENTIAL = USER + "?" + ACTION + "=" + ACTION_GET; // TODO подумать об этом
     public static final String GET_REDIRECT_OUT = INDEX_HTML;
     public static final String GET_FORWARD_ACTION_IS_NULL = "/views/user/login.jsp";
 
     public static final String POST_FORWARD_LOGIN_FAIL = "/views/user/login.jsp";
+    public static final String POST_FORWARD_REGISTER_FAIL = "/views/user/login.jsp";
+    public static final String POST_FORWARD_CREDENTIAL_UPDATE_FAIL = "/views/user/update.jsp";
 
 
     private final Logger log = LoggerFactory.getLogger(LoginServlet.class);
@@ -56,52 +57,42 @@ public class LoginServlet extends HttpServlet {
         super.init(config);
     }
 
-    // TODO валидация полей, валидация повтора пароля
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("post");
         String action = getParameter(request, ACTION);
         log.debug("action = {}", action);
-        action = action == null ? "" : action; // TODO если action == ""
+        action = action == null ? "" : action.isEmpty() ? "" : action;
         HttpSession session = request.getSession();
         switch (Parameter.byValue(action)) {
             case ACTION_LOGIN:
-                String userLogin = request.getParameter(PARAM_LOGIN.value());
-                String password = request.getParameter(PARAM_PASSWORD.value()); // TODO перенести отсюда внутрь
-                login(request, response, session, userLogin, password);
+                login(request, response, session);
                 return;
             case ACTION_REGISTER:
-                String userLoginNew = request.getParameter(PARAM_LOGIN.value());
-                String passwordNew = request.getParameter(PARAM_PASSWORD_NEW.value());
-                String passwordRepeat = request.getParameter(PARAM_PASSWORD_NEW.value());
-                String userName = request.getParameter(UserAttribute.PARAM_NAME.value());
-                String userCalMin = request.getParameter(UserAttribute.PARAM_CALORIES_MIN.value());
-                String userCalMax = request.getParameter(UserAttribute.PARAM_CALORIES_MAX.value()); // TODO перенести в методы
-                register(request, response, session, userLoginNew, passwordNew, passwordRepeat,
-                        userName, Integer.parseInt(userCalMin), Integer.parseInt(userCalMax), true);
+                 register(request, response, session, true);
                 return;
             case ACTION_UPDATE:
-                String passwordUpdateOld = request.getParameter(PARAM_PASSWORD_OLD.value());
-                String passwordUpdateNew = request.getParameter(PARAM_PASSWORD_NEW.value()); // TODO перенести отсюда внутрь
-                String passwordUpdateRepeat = request.getParameter(UserCredentialAttribute.PARAM_PASSWORD_REPEAT.value());
-                updatePassword(request, response, session, passwordUpdateOld, passwordUpdateNew, passwordUpdateRepeat);
-
+                updatePassword(request, response, session);
                 return;
         }
 
         forward(request, response, INDEX_HTML);
     }
 
-    private void login(HttpServletRequest request, HttpServletResponse response,
-                       HttpSession session, String userName, String password) throws ServletException, IOException {
-        log.debug("login");
+    private void login(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException {
         String passwordHash = null;
         try {
-            passwordHash = Encryption.hashing(password);
+            passwordHash = Encryption.hashing(getParameter(request, PARAM_PASSWORD));
             log.debug("password hashed");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        UserCredential credential = new UserCredential(userName, passwordHash);
+        login(request, response, session, passwordHash);
+    }
+
+    private void login(HttpServletRequest request, HttpServletResponse response, HttpSession session, String passwordHash) throws ServletException, IOException {
+        log.debug("login");
+        String userLogin = getParameter(request, PARAM_LOGIN);
+        UserCredential credential = new UserCredential(userLogin, passwordHash);
         int findId = credentialRepository.find(credential);
         if (findId != 0) {
             log.debug("credential found for id = {}", findId);
@@ -114,58 +105,83 @@ public class LoginServlet extends HttpServlet {
             UserCredentialValidation validation = new UserCredentialValidation();
             validation.invalid(PARAM_LOGIN);
             validation.invalid(PARAM_PASSWORD, "password or login is wrong");
-            setAttribute(request, PARAM_PASSWORD, validation);
-            fail(request, response, validation, POST_FORWARD_LOGIN_FAIL);
+            setAttribute(request, VALIDATOR_USER_CREDENTIAL, validation);
+            forward(request, response, POST_FORWARD_LOGIN_FAIL);
         }
     }
 
     private void register(HttpServletRequest request, HttpServletResponse response,
-                          HttpSession session, String userLogin, String password, String passwordRepeat,
-                          String userName, int calMin, int calMax, boolean loginAfterRegistration) throws ServletException, IOException {
+                          HttpSession session, boolean loginAfterRegistration) throws ServletException, IOException {
         log.debug("register");
-        String passwordHash = null;
-        try {
-            passwordHash = Encryption.hashing(password);
-            log.error("password hashed");
-        } catch (NoSuchAlgorithmException e) {
-            log.error("password hashing error");
-            throw new RuntimeException(e);
+        var userValidation = new UserValidation();
+        var credentialValidation = new UserCredentialValidation();
+        User userNew = RequestParser.user(request, userValidation);
+        UserCredential credentialNew = RequestParser.credentialNew(request, userNew, credentialValidation);
+        if (Objects.isNull(userNew) || Objects.isNull(credentialNew)) {
+            log.error("userNew or credentialNew == null");
+            throw new RuntimeException();
         }
+        // проверить уникальность логина
+        if (!credentialRepository.isUnique(credentialNew.getLogin())) {
+            log.debug("login already exist!");
+            credentialValidation.invalid(PARAM_LOGIN, String.format("login %s already exist!", credentialNew.getLogin()));
+        }
+        if (userValidation.isNotValid() || credentialValidation.isNotValid()) {
+            log.debug("user or credential invalid");
+            setAttribute(request, VALIDATOR_USER, userValidation);
+            setAttribute(request, VALIDATOR_USER_CREDENTIAL, credentialValidation);
+            // положить в атрибут объекты для повторной формы
+            setAttribute(request, USER, userNew);
+            setAttribute(request, PARAM_LOGIN, credentialNew.getLogin());
+            forward(request, response, POST_FORWARD_REGISTER_FAIL);
+            return;
+        }
+        // < валидация пройдена >
+        hashingPassword(credentialNew);
 
-        // TODO валидация + валидация уникальности логина. Перенести в другой сервлет?
-        UserCredential credential = new UserCredential(userLogin, passwordHash);
-        User savedUser = userRepository.save(new User(0, userName, calMin, calMax));
-        credentialRepository.save(credential, savedUser.getId());
-        log.debug("user and credential saved; autologin = {} ", loginAfterRegistration);
+        // сохранить
+        var savedUser = userRepository.save(userNew);
+        credentialNew.setUser(savedUser);
+        boolean accessSaveCredential = credentialRepository.save(credentialNew, savedUser.getId());
+        log.debug("user saved, credential saved = {}; autologin = {} ", accessSaveCredential, loginAfterRegistration);
         if (loginAfterRegistration) {
-            login(request, response, session, userLogin, password); // register -> login
+            login(request, response, session, credentialNew.getPassword()); // register -> login
         } else {
             response.sendRedirect(POST_REDIRECT_REGISTRATION);
         }
     }
 
-    // TODO тоже перенести в другой сервлет?
-    private void updatePassword(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-                                String passwordOld, String passwordNew, String passwordRepeat) throws IOException, ServletException {
+    private void hashingPassword(UserCredential credential) {
+        try {
+            credential.setPassword(Encryption.hashing(credential.getPassword()));
+            log.error("password hashed");
+        } catch (NoSuchAlgorithmException e) {
+            log.error("password hashing error");
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private void updatePassword(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException, ServletException {
         log.debug("update password");
         UserCredentialValidation validation = new UserCredentialValidation();
         User user = ServletSecurityUtil.getUserSession(request);
 
         // parse credential
-        UserCredential credentialUpdate = RequestParser.parseUserCredentialUpdateValid(request, user, validation);
+        UserCredential credentialUpdate = RequestParser.passwordWithRepeat(request, user, validation);
         if (credentialUpdate == null) {
             log.debug("credential update is null");
-            fail(request, response, validation, INDEX_HTML);
+            setAttribute(request, VALIDATOR_USER_CREDENTIAL, validation);
+            forward(request, response, INDEX_HTML);
             return;
         }
 
         /* TODO вместо все этого?
-         TODO - сделать один метод репозитория, который примет старый пароль и новый,
-         TODO - затем проверит, что старый существует (иначе вернёт exc, отловив -> невалид),
-         TODO - после чего обновит пароль */
+          - сделать один метод репозитория, который примет старый пароль и новый,
+          - затем проверит, что старый существует (иначе вернёт exc, отловив -> невалид),
+          - после чего обновит пароль */
 
-        //
-        UserCredential credentialOld = new UserCredential(ServletSecurityUtil.authId(request));
+        UserCredential credentialOld = new UserCredential(ServletSecurityUtil.getUserSession(request));
         try {
             credentialOld.setPassword(Encryption.hashing(parseString(request, PARAM_PASSWORD_OLD)));
             credentialUpdate.setPassword(Encryption.hashing(credentialUpdate.getPassword()));
@@ -177,8 +193,7 @@ public class LoginServlet extends HttpServlet {
 
         if (!credentialRepository.setLogin(credentialOld)) {
             log.debug("invalid password, fail set login for credential");
-            validation.appendWithSeparator("invalid password"); // TODO перенос в validation, сделать invalid(field, message)
-            validation.invalid(PARAM_PASSWORD);
+            validation.invalid(PARAM_PASSWORD, "invalid password");
         } else {
             log.debug("credential founded");
             credentialUpdate.setLogin(credentialOld.getLogin());
@@ -187,7 +202,8 @@ public class LoginServlet extends HttpServlet {
         if (validation.isNotValid()) {
             log.debug("credential invalid -> fail()");
             setAttribute(request, USER_EDIT, user);
-            fail(request, response, validation, "views/user/update.jsp"); // TODO заменить на константу
+            setAttribute(request, VALIDATOR_USER_CREDENTIAL, validation);
+            forward(request, response, POST_FORWARD_CREDENTIAL_UPDATE_FAIL);
             return;
         } else {
             if (!credentialRepository.update(credentialUpdate)) {
@@ -197,14 +213,6 @@ public class LoginServlet extends HttpServlet {
         }
 
         response.sendRedirect(POST_REDIRECT_UPDATE_CREDENTIAL);
-    }
-
-    // Можно принять нужный путь
-    private void fail(HttpServletRequest request, HttpServletResponse response,
-                      UserCredentialValidation validation, String path) throws ServletException, IOException {
-        log.debug("fail");
-        setAttribute(request, validation.attribute(), validation);
-        forward(request, response, path); // TODO вынести в константу
     }
 
 
@@ -217,7 +225,6 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // TODO action.isEmpty()
         switch (Parameter.byValue(action)) {
             case ACTION_LOGOUT:
                 log.debug("logout");

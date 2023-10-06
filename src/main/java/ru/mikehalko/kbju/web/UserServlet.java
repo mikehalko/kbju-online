@@ -2,6 +2,7 @@ package ru.mikehalko.kbju.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.mikehalko.kbju.model.mock.UserMock;
 import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.UserRepository;
 import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static ru.mikehalko.kbju.util.web.RequestParser.parseString;
-import static ru.mikehalko.kbju.util.web.RequestParser.parseUserValid;
+import static ru.mikehalko.kbju.util.web.RequestParser.user;
 import static ru.mikehalko.kbju.util.web.Util.*;
 import static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
@@ -30,7 +31,7 @@ public class UserServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(UserServlet.class);
     private static UserRepository userRepository;
 
-    private static final User mockUser = new User(0, ""); // TODO mock
+    private static final User mockUser = new UserMock();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -62,10 +63,8 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("doPost");
 
-        // TODO action = update
-
         UserValidation validation = new UserValidation();
-        User updatedUser = parseUserValid(request, validation);
+        User updatedUser = user(request, validation);
         if (updatedUser == null) updatedUser = mockUser;
 
         log.debug("VALIDATION = {}", validation.isValid());

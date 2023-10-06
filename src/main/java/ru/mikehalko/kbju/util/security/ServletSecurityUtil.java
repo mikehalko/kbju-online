@@ -1,6 +1,8 @@
 package ru.mikehalko.kbju.util.security;
 
 import ru.mikehalko.kbju.model.user.User;
+import ru.mikehalko.kbju.util.security.exception.UserHttpSessionNotFoundException;
+import ru.mikehalko.kbju.web.exception.HttpSessionNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -41,13 +43,13 @@ public class ServletSecurityUtil {
 
     private static HttpSession session(HttpServletRequest request)  {
         HttpSession session = request.getSession(false);
-        if (Objects.isNull(session)) throw new RuntimeException("session not found"); // TODO свой exception
+        if (Objects.isNull(session)) throw new HttpSessionNotFoundException();
         return session;
     }
 
     private static User checkUser(HttpSession session) {
         User user = (User) session.getAttribute(ATTRIBUTE_USER);
-        if (Objects.isNull(user)) throw new RuntimeException("user in session not found"); // TODO свой exception
+        if (Objects.isNull(user)) throw new UserHttpSessionNotFoundException();
         return user;
     }
 }

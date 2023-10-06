@@ -13,4 +13,6 @@ public interface UserCredentialRepository {
     int find(UserCredential credential);
 
     boolean setLogin(UserCredential credential);
+
+    boolean isUnique(String login);
 }

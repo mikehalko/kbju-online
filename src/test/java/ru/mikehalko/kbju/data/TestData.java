@@ -16,13 +16,13 @@ public class TestData {
     public static final User USER_4 = new User(4, "USER_4", 1200, 2200);
     public static final User USER_5 = new User(5, "USER_5", 1300, 2300);
 
-    public static final UserCredential NEW_CREDENTIAL = new UserCredential(0, NEW_USER.getName(), "new");
+    public static final UserCredential NEW_CREDENTIAL = new UserCredential(null, NEW_USER.getName(), "new");
 
-    public static final UserCredential CREDENTIAL_1 = new UserCredential(USER_1.getId(), USER_1.getName(), "1");
-    public static final UserCredential CREDENTIAL_2 = new UserCredential(USER_2.getId(), USER_2.getName(), "2");
-    public static final UserCredential CREDENTIAL_3 = new UserCredential(USER_3.getId(), USER_3.getName(), "3");
-    public static final UserCredential CREDENTIAL_4 = new UserCredential(USER_4.getId(), USER_4.getName(), "4");
-    public static final UserCredential CREDENTIAL_5 = new UserCredential(USER_5.getId(), USER_5.getName(), "5");
+    public static final UserCredential CREDENTIAL_1 = new UserCredential(USER_1, USER_1.getName(), "1");
+    public static final UserCredential CREDENTIAL_2 = new UserCredential(USER_2, USER_2.getName(), "2");
+    public static final UserCredential CREDENTIAL_3 = new UserCredential(USER_3, USER_3.getName(), "3");
+    public static final UserCredential CREDENTIAL_4 = new UserCredential(USER_4, USER_4.getName(), "4");
+    public static final UserCredential CREDENTIAL_5 = new UserCredential(USER_5, USER_5.getName(), "5");
 
     public static final Meal NEW_MEAL = new Meal(0, null, LocalDateTime.parse("2023-09-04T09:23:54"), 100, "test_0", new Nutritionally(174, 28, 4, 54));
 

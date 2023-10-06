@@ -1,14 +1,15 @@
 package ru.mikehalko.kbju.util.model;
 
+import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.model.user.UserCredential;
 
 public class UserCredentialUtil {
-    public static UserCredential createCredential(int user_id, String login, String password) {
-        return new UserCredential(user_id, login, password);
+    public static UserCredential createCredential(User owner, String login, String password) {
+        return new UserCredential(owner, login, password);
     }
 
     public static UserCredential clone(UserCredential credential) {
-        UserCredential clone = new UserCredential(credential.getUserId(), credential.getLogin(), credential.getPassword());
+        UserCredential clone = new UserCredential(credential.getUser(), credential.getLogin(), credential.getPassword());
         return clone;
     }
 

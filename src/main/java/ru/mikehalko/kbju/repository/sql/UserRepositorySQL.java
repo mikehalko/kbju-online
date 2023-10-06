@@ -8,12 +8,13 @@ import ru.mikehalko.kbju.repository.UserRepository;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.mikehalko.kbju.util.sql.ConnectDataBase.executeQuery;
 import static ru.mikehalko.kbju.util.sql.ConstantProperties.*;
 import static ru.mikehalko.kbju.util.sql.ResultSetSQLParser.parseUser;
-import static ru.mikehalko.kbju.util.sql.ResultSetSQLParser.parseUsers;
+import static ru.mikehalko.kbju.util.sql.ResultSetSQLParser.parseUsersInList;
 
 
 public class UserRepositorySQL implements UserRepository, Connectable {
@@ -116,6 +117,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         return response;
     }
 
+    // meal without user
     @Override
     public User get(int id) {
 
@@ -133,7 +135,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
                 return null;
             }
             user = parseUser(rs);
-            user.setMeals(null); // TODO или сделать getUserWithMeals() getMealsWithUser()
+            user.setMeals(null); // !
         } catch (SQLException e) {
             throw new RuntimeException();
         }
@@ -149,15 +151,15 @@ public class UserRepositorySQL implements UserRepository, Connectable {
                 USER_TABLE
         );
 
-        List<User> users = null;
+        List<User> users = new ArrayList<>();
         try (ResultSet rs = executeQuery(connection, userSQL);) {
-            users = parseUsers(rs);
+            parseUsersInList(rs, users);
             if (users.isEmpty()) log.debug("result users is empty");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("get all sql exception", e);
         }
 
-        log.debug("parsing users result = {}", users);
+        log.debug("selectAll result = {}", users);
 
         return users;
     }

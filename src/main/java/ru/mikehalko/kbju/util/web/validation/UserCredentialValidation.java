@@ -13,7 +13,6 @@ public class UserCredentialValidation implements Validation {
     public static final String MESSAGE_MUST_BE_HIGHER = "%s must be higher %s"; // TODO перевод
     public static final String MESSAGE_MUST_BE_LOWER = "%s must be lower %s";
 
-    // TODO задействовать существующий enum
     public final boolean LOGIN_EMPTY = false;
     public final boolean PASSWORD_EMPTY = false;
     public final boolean PASSWORD_REPEAT_EMPTY = false;
@@ -33,12 +32,11 @@ public class UserCredentialValidation implements Validation {
     }
 
     @Override
-    public void catchEx(String field, Exception exception) {
+    public void catchEx(Constant param, Exception exception) {
         createMessageIfNull();
-        message.append(exception.getClass().getName()).append(" for field ").append(field).append(SEPARATOR);
+        message.append(exception.getClass().getName()).append(" for field ").append(param.value()).append(SEPARATOR);
     }
 
-    // TODO сделать проверку на уникальность логина
     public void login(String name) {
         if (name.length() < LOGIN_LENGTH_MIN) {
             invalid(PARAM_LOGIN);

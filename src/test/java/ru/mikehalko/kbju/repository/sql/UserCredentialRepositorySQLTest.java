@@ -74,10 +74,11 @@ public class UserCredentialRepositorySQLTest {
         User user = userRepository.save(NEW_USER);
 
         UserCredential created = prepareDataUserCredential(NEW_CREDENTIAL);
+        created.setUser(user);
         boolean isSaved = credRepository.save(created, user.getId());
         Assert.assertTrue(isSaved);
 
-        UserCredential expected = prepareDataUserCredential(user.getId(), NEW_CREDENTIAL);
+        UserCredential expected = prepareDataUserCredential(user, NEW_CREDENTIAL);
         Assert.assertEquals(expected.getUserId(), credRepository.find(expected));
     }
 

@@ -62,20 +62,21 @@ public class TestUtil {
     public static List<UserCredential> prepareDataUserCredentials(int startUserId, UserCredential... credentials) {
         UserCredential[] expectedCredentials = UserCredentialUtil.clone(credentials);
         int idCounter = startUserId;
-        for (UserCredential credential : expectedCredentials)
-            credential.setUserId(idCounter++);
+        for (UserCredential credential : expectedCredentials) {
+            User user = new User(); // !
+            user.setId(idCounter++);
+            credential.setUser(user);
+        }
         return List.of(expectedCredentials);
     }
 
     public static UserCredential prepareDataUserCredential(UserCredential credential) {
-        UserCredential result = UserCredentialUtil.clone(credential);
-
-        return result;
+        return UserCredentialUtil.clone(credential);
     }
 
-    public static UserCredential prepareDataUserCredential(int userId, UserCredential credential) {
+    public static UserCredential prepareDataUserCredential(User user, UserCredential credential) {
         UserCredential result = UserCredentialUtil.clone(credential);
-        result.setUserId(userId);
+        result.setUser(user);
 
         return result;
     }

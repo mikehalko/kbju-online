@@ -62,6 +62,7 @@
                     <section id="sections">
                         <section class="section">
                             <div class="input_container">
+                                <%--                                TODO "name" значения констант --%>
                                 <input id="nickname" class="user_update <%= nicknameClass%>" type="text" name="name" placeholder=" " value="${user_edit.name}" required/>
                                 <label class="user_update">nickname</label>
                             </div>

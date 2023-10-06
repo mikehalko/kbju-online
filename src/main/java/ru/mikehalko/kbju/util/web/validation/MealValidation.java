@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class MealValidation implements Validation {
     private static final String SEPARATOR = ";\n";
-    public static final String MESSAGE_MUST_BE_HIGHER = "%s must be higher %s"; // TODO перевод
+    public static final String MESSAGE_MUST_BE_HIGHER = "%s must be higher %s";
     public static final String MESSAGE_MUST_BE_LOWER = "%s must be lower %s";
 
     public final boolean ID_EMPTY = false;
@@ -39,34 +39,33 @@ public class MealValidation implements Validation {
     }
 
     @Override
-    public void catchEx(String field, Exception exception) {
+    public void catchEx(Constant field, Exception exception) {
         createMessageIfNull();
-        message.append(exception.getClass().getName()).append(" for field ").append(field).append(SEPARATOR);
+        message.append(exception.getClass().getName()).append(" for field ").append(field.value()).append(SEPARATOR);
     }
 
-    public void id(MealAttribute param, int id) { // TODO УБРАТЬ ПАРАМЕТР!
+    public void id(int id) {
         if (id < ID_MIN) {
             createMessageIfNull();
             invalid();
             invalid(PARAM_ID);
-            appendMustBeHigher(param.value(), id);
+            appendMustBeHigher(PARAM_ID.value(), id);
         }
     }
 
-    public void dateTime(MealAttribute param, LocalDateTime dateTime) {
-        // ...
+    public void dateTime(LocalDateTime dateTime) {
     }
 
-    public void description(MealAttribute param, String description) { // TODO УБРАТЬ ПАРАМЕТР!
+    public void description(String description) {
         if (description.length() < DESCRIPTION_MIN_LENGTH) {
             createMessageIfNull();
             invalid();
             invalid(PARAM_DESCRIPTION);
-            appendMustBeHigher(param.value(), description);
+            appendMustBeHigher(PARAM_DESCRIPTION.value(), description);
         } else if (description.length() > DESCRIPTION_MAX_LENGTH) {
             createMessageIfNull();
             invalid(PARAM_DESCRIPTION);
-            appendMustBeLower(param.value(), description);
+            appendMustBeLower(PARAM_DESCRIPTION.value(), description);
         }
     }
 

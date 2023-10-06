@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+// TODO exceptions .. = (Class) return .., parse
 public class Util {
     public static void forward(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
         request.getRequestDispatcher(path).forward(request, response);
@@ -26,7 +27,15 @@ public class Util {
         return request.getAttribute(attribute.value());
     }
 
-    public static String getParameter(HttpServletRequest request, Parameter parameter) {
+    public static String getAttributeString(HttpServletRequest request, Constant attribute) {
+        return (String) request.getAttribute(attribute.value());
+    }
+
+    public static String getParameter(HttpServletRequest request, Constant parameter) {
         return request.getParameter(parameter.value());
+    }
+
+    public static int getParameterInt(HttpServletRequest request, Constant parameter) {
+        return Integer.parseInt(request.getParameter(parameter.value()));
     }
 }

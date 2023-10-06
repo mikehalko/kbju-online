@@ -13,19 +13,8 @@ public class User {
     private int caloriesMax; // max norm per day
     private List<Meal> meals;
 
-
     public User() {
-    }
 
-    public User(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public User(int id, String name, List<Meal> meals) {
-        this.id = id;
-        this.name = name;
-        this.meals = meals;
     }
 
     public User(int id, String name, int caloriesMin, int caloriesMax) {
