@@ -1,9 +1,9 @@
 package ru.mikehalko.kbju.repository.sql;
 
-import java.sql.Connection;
+import ru.mikehalko.kbju.util.sql.ConnectionDataBase;
 
 public interface Connectable {
-    Connection getConnection();
+    ConnectionDataBase getConnection();
 
-    void setConnection(Connection connection);
+    void setConnection(ConnectionDataBase connection);
 }

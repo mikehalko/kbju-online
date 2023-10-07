@@ -4,19 +4,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.repository.MealRepository;
+import ru.mikehalko.kbju.util.sql.ConnectionDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.mikehalko.kbju.util.sql.ConnectDataBase.executeQuery;
 import static ru.mikehalko.kbju.util.sql.ConstantProperties.*;
 import static ru.mikehalko.kbju.util.sql.ResultSetSQLParser.*;
 
 public class MealRepositorySQL implements MealRepository, Connectable {
 
     private final Logger log = LoggerFactory.getLogger(MealRepositorySQL.class);
-    private Connection connection;
+    private ConnectionDataBase connection;
 
     private static MealRepositorySQL instance;
 
@@ -29,11 +29,11 @@ public class MealRepositorySQL implements MealRepository, Connectable {
         return instance;
     }
 
-    public Connection getConnection() {
+    public ConnectionDataBase getConnection() {
         return connection;
     }
 
-    public void setConnection(Connection connection) {
+    public void setConnection(ConnectionDataBase connection) {
         this.connection = connection;
     }
 
@@ -58,7 +58,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
         );
         log.debug("SQL = {}", mealSaveSQL);
 
-        try (ResultSet rs = executeQuery(connection, mealSaveSQL)) {
+        try (ResultSet rs = connection.executeQuery(mealSaveSQL)) {
             rs.next();
             meal.setId(rs.getInt(MEAL_ID)); // чтобы не делать второй запрос с get
         } catch (SQLException e) {
@@ -88,7 +88,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
         );
         log.debug("SQL = {}", mealUpdateSQL);
 
-        try (ResultSet rs = executeQuery(connection, mealUpdateSQL);) {
+        try (ResultSet rs = connection.executeQuery(mealUpdateSQL);) {
             rs.next();
             int returnedId = rs.getInt(MEAL_ID);
             if (meal.getId() != returnedId) {
@@ -110,7 +110,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
         );
         log.debug("SQL = {}", mealDeleteSQL);
         boolean response = false;
-        try (ResultSet rs = executeQuery(connection, mealDeleteSQL)) {
+        try (ResultSet rs = connection.executeQuery(mealDeleteSQL)) {
             rs.next();
             response = rs.getInt(MEAL_ID) != 0;
         } catch (SQLException e) {
@@ -130,7 +130,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
         );
         log.debug("SQL = {}", mealSQL);
         Meal meal = null;
-        try (ResultSet rs = executeQuery(connection, mealSQL);) {
+        try (ResultSet rs = connection.executeQuery(mealSQL);) {
             if (!rs.next()) {
                 log.debug("get result is empty");
                 return null;
@@ -152,7 +152,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
         );
 
         List<Meal> meals = new ArrayList<>();
-        try (ResultSet rs = executeQuery(connection, mealsSQL);) {
+        try (ResultSet rs = connection.executeQuery(mealsSQL);) {
             parseMealsInList(rs, meals);
             if (meals.isEmpty()) log.debug("result meals is empty");
         } catch (SQLException e) {

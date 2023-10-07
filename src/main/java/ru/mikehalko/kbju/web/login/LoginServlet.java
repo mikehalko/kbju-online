@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
 
     public static final String POST_REDIRECT_REGISTRATION = "/views/user/login";
     public static final String POST_REDIRECT_LOGIN_ACCESS = "meals";
-    public static final String POST_REDIRECT_UPDATE_CREDENTIAL = USER + "?" + ACTION + "=" + ACTION_GET; // TODO подумать об этом
+    public static final String POST_REDIRECT_UPDATE_CREDENTIAL = USER + "?" + ACTION + "=" + ACTION_GET;
     public static final String GET_REDIRECT_OUT = INDEX_HTML;
     public static final String GET_FORWARD_ACTION_IS_NULL = "/views/user/login.jsp";
 

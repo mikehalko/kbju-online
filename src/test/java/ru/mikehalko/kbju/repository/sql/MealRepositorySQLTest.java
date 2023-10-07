@@ -2,25 +2,31 @@ package ru.mikehalko.kbju.repository.sql;
 
 import org.junit.*;
 import ru.mikehalko.kbju.model.meal.Meal;
+import ru.mikehalko.kbju.util.sql.ConnectionDataBase;
 import ru.mikehalko.kbju.util.sql.ConstantProperties;
 
 import java.io.*;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 import static ru.mikehalko.kbju.data.TestData.*;
 import static ru.mikehalko.kbju.util.TestUtil.*;
-import static ru.mikehalko.kbju.util.sql.ConnectDataBase.initConstantPropertiesAndGetConnection;
 
 public class MealRepositorySQLTest {
 
-    private static Connection connection;
+    private static ConnectionDataBase connection;
     private static MealRepositorySQL repository;
 
     @BeforeClass
     public static void beforeClass() {
-        connection = initConstantPropertiesAndGetConnection(POSTGRES_PROPERTIES_PATH);
+        try {
+            ConstantProperties.initProperties(POSTGRES_PROPERTIES_PATH);
+        connection = ConnectionDataBase.getConnection(
+                ConstantProperties.DB_URL, ConstantProperties.DB_USER,
+                ConstantProperties.DB_PASS, ConstantProperties.DB_CLASS_DRIVER);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         repository = MealRepositorySQL.getInstance();
         repository.setConnection(connection);
 
@@ -50,7 +56,7 @@ public class MealRepositorySQLTest {
     @Before
     public void setUp() throws Exception {
         try {
-            Connection connection = repository.getConnection();
+            ConnectionDataBase connection = repository.getConnection();
             executeSQLFromFile(connection, PREPARE_DB_SQL_PATH);
             executeSQLFromFile(connection, CLEAN_AND_INIT_SQL_PATH);
         } catch (SQLException | IOException e) {

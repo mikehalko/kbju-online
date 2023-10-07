@@ -4,18 +4,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.model.user.UserCredential;
 import ru.mikehalko.kbju.repository.UserCredentialRepository;
+import ru.mikehalko.kbju.util.sql.ConnectionDataBase;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static ru.mikehalko.kbju.util.sql.ConnectDataBase.executeQuery;
 import static ru.mikehalko.kbju.util.sql.ConstantProperties.*;
 
 public class UserCredentialRepositorySQL implements UserCredentialRepository, Connectable {
 
     private final Logger log = LoggerFactory.getLogger(UserCredentialRepositorySQL.class);
-    private Connection connection;
+    private ConnectionDataBase connection;
 
     private static UserCredentialRepositorySQL instance;
 
@@ -46,7 +45,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
 
 
         boolean access = false;
-        try (ResultSet rs = executeQuery(connection, credentialSaveSQL)) {
+        try (ResultSet rs = connection.executeQuery(credentialSaveSQL)) {
             rs.next();
             access = rs.getInt(USER_CREDENTIAL_USER_ID) == credential.getUserId();
         } catch (SQLException e) {
@@ -84,7 +83,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
 
 
         boolean access = false;
-        try (ResultSet rs = executeQuery(connection, credentialUpdateSQL)) {
+        try (ResultSet rs = connection.executeQuery(credentialUpdateSQL)) {
             rs.next();
             access = rs.getInt(USER_CREDENTIAL_USER_ID) == credential.getUserId();
         } catch (SQLException e) {
@@ -113,7 +112,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
         log.debug("SQL = {}", hidePassword(credentialFindSQL, credential.getPassword()));
 
         int findId = 0;
-        try (ResultSet rs = executeQuery(connection, credentialFindSQL)) {
+        try (ResultSet rs = connection.executeQuery(credentialFindSQL)) {
             if (rs.next()) {
                 findId = rs.getInt(USER_CREDENTIAL_USER_ID);
             }
@@ -130,10 +129,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
         log.debug("setLogin");
 
         if (credential == null || credential.getLogin() != null) {
-            throw new RuntimeException(); // TODO свои exception
-        }
-        if (credential.getUserId() <= 0) {
-            throw new RuntimeException();
+            throw new RuntimeException("credential is null or login is null");
         }
 
         String credentialFindSQL = String.format(
@@ -144,7 +140,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
 
         log.debug("SQL = {}", hidePassword(credentialFindSQL, credential.getPassword()));
         String findLogin = null;
-        try (ResultSet rs = executeQuery(connection, credentialFindSQL)) {
+        try (ResultSet rs = connection.executeQuery(credentialFindSQL)) {
             if (rs.next()) {
                 findLogin = rs.getString(USER_CREDENTIAL_LOGIN);
             }
@@ -171,7 +167,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
         log.debug("SQL = {}", loginUniqueSQL);
 
         int count = 0;
-        try (ResultSet rs = executeQuery(connection, loginUniqueSQL)) {
+        try (ResultSet rs = connection.executeQuery(loginUniqueSQL)) {
             if (rs.next()) {
                 count = rs.getInt("count");
             }
@@ -183,12 +179,12 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
     }
 
     @Override
-    public Connection getConnection() {
+    public ConnectionDataBase getConnection() {
         return this.connection;
     }
 
     @Override
-    public void setConnection(Connection connection) {
+    public void setConnection(ConnectionDataBase connection) {
         this.connection = connection;
     }
 

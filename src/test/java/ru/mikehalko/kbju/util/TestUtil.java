@@ -7,6 +7,7 @@ import ru.mikehalko.kbju.to.MealTo;
 import ru.mikehalko.kbju.util.model.MealsUtil;
 import ru.mikehalko.kbju.util.model.UserCredentialUtil;
 import ru.mikehalko.kbju.util.model.UserUtil;
+import ru.mikehalko.kbju.util.sql.ConnectionDataBase;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -88,7 +89,7 @@ public class TestUtil {
         return new String(encoded, StandardCharsets.UTF_8);
     }
 
-    public static void executeSQLFromFile(Connection connection, String sql_file_path) throws SQLException, IOException {
+    public static void executeSQLFromFile(ConnectionDataBase connection, String sql_file_path) throws SQLException, IOException {
         Statement statement = connection.createStatement();
         String PrepareDBSQL = readFile(sql_file_path);
         statement.execute(PrepareDBSQL);

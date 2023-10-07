@@ -41,7 +41,17 @@ public class ConstantProperties {
 
     private ConstantProperties() {}
 
-    public static Properties properties(String path_DB_properties) throws IOException {
+    public static void initProperties(String properties_path) throws IOException {
+        try {
+            ConstantProperties.initDBAll(properties_path);
+            log.debug("Properties init from = {}", properties_path);
+        } catch (IOException e) {
+            log.error("Reading property file error", e);
+            throw e;
+        }
+    }
+
+    private static Properties properties(String path_DB_properties) throws IOException {
         log.debug("properties path = {}", path_DB_properties);
         Properties properties = null;
         try (FileInputStream stream = new FileInputStream(path_DB_properties);) {
@@ -55,21 +65,21 @@ public class ConstantProperties {
         return properties;
     }
 
-    public static void initDBAll(String path_DB_properties) throws IOException {
+    private static void initDBAll(String path_DB_properties) throws IOException {
         log.debug("init path DB properties path = {}", path_DB_properties);
         Properties properties = properties(path_DB_properties);
 
         initDBAll(properties);
     }
 
-    public static void initDBAll(Properties properties) {
+    private static void initDBAll(Properties properties) {
         initDBCredentials(properties);
         initDBMealAndUserTables(properties);
         initDBMealAndUserColumns(properties);
         initDBCredentialColumns(properties);
     }
 
-    public static void initDBCredentials(Properties properties) {
+    private static void initDBCredentials(Properties properties) {
         DB_CLASS_DRIVER = properties.getProperty("DB.DB_CLASS_DRIVER");
         DB_URL = properties.getProperty("DB.DB_URL");
         DB_USER = properties.getProperty("DB.USER");
@@ -77,7 +87,7 @@ public class ConstantProperties {
         checkNull(DB_CLASS_DRIVER, DB_URL, DB_USER, DB_PASS);
     }
 
-    public static void initDBMealAndUserTables(Properties properties) {
+    private static void initDBMealAndUserTables(Properties properties) {
         USER_TABLE = properties.getProperty("USER.TABLE_NAME");
         MEAL_TABLE = properties.getProperty("MEAL.TABLE_NAME");
         USER_CREDENTIAL_TABLE = properties.getProperty("USER_CREDENTIAL.TABLE_NAME");
@@ -85,7 +95,7 @@ public class ConstantProperties {
 
     }
 
-    public static void initDBMealAndUserColumns(Properties properties) {
+    private static void initDBMealAndUserColumns(Properties properties) {
         MEAL_ID = properties.getProperty("MEAL.col.id");
         MEAL_DATETIME = properties.getProperty("MEAL.col.dateTime");
         MEAL_MASS = properties.getProperty("MEAL.col.mass");
@@ -102,7 +112,7 @@ public class ConstantProperties {
                 , MEAL_CALORIES, USER_CALORIES_MIN_PER_DAY, USER_CALORIES_MAX_PER_DAY, USER_ID, USER_NAME);
     }
 
-    public static void initDBCredentialColumns(Properties properties) {
+    private static void initDBCredentialColumns(Properties properties) {
         USER_CREDENTIAL_USER_ID = properties.getProperty("USER_CREDENTIAL.col.user_id");
         USER_CREDENTIAL_LOGIN = properties.getProperty("USER_CREDENTIAL.col.name");
         USER_CREDENTIAL_PASSWORD = properties.getProperty("USER_CREDENTIAL.col.password");

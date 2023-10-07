@@ -10,8 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import ru.mikehalko.kbju.util.sql.ConnectionDataBase;
 
-import static ru.mikehalko.kbju.util.sql.ConnectDataBase.executeQuery;
 import static ru.mikehalko.kbju.util.sql.ConstantProperties.*;
 import static ru.mikehalko.kbju.util.sql.ResultSetSQLParser.parseUser;
 import static ru.mikehalko.kbju.util.sql.ResultSetSQLParser.parseUsersInList;
@@ -19,7 +19,7 @@ import static ru.mikehalko.kbju.util.sql.ResultSetSQLParser.parseUsersInList;
 
 public class UserRepositorySQL implements UserRepository, Connectable {
     private final Logger log = LoggerFactory.getLogger(UserRepositorySQL.class);
-    private Connection connection;
+    private ConnectionDataBase connection;
 
     private static UserRepositorySQL instance;
 
@@ -34,11 +34,11 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         return instance;
     }
 
-    public Connection getConnection() {
+    public ConnectionDataBase getConnection() {
         return connection;
     }
 
-    public void setConnection(Connection connection) {
+    public void setConnection(ConnectionDataBase connection) {
         this.connection = connection;
     }
 
@@ -61,7 +61,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         );
         log.debug("SQL = {}", userSaveSQL);
 
-        try (ResultSet rs = executeQuery(connection, userSaveSQL)) {
+        try (ResultSet rs = connection.executeQuery(userSaveSQL)) {
             rs.next();
             user.setId(rs.getInt(USER_ID));
         } catch (SQLException e) {
@@ -85,7 +85,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         );
         log.debug("SQL = {}", userUpdateSQL);
 
-        try (ResultSet rs = executeQuery(connection, userUpdateSQL);) {
+        try (ResultSet rs = connection.executeQuery(userUpdateSQL);) {
             rs.next();
             int returnedId = rs.getInt(USER_ID);
             if (user.getId() != returnedId) {
@@ -107,7 +107,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         );
         log.debug("SQL = {}", userDeleteSQL);
         boolean response = false;
-        try (ResultSet rs = executeQuery(connection, userDeleteSQL)) {
+        try (ResultSet rs = connection.executeQuery(userDeleteSQL)) {
             rs.next();
             response = rs.getInt(USER_ID) != 0;
         } catch (SQLException e) {
@@ -129,7 +129,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         );
         log.debug("SQL = {}", userSQL);
         User user = null;
-        try (ResultSet rs = executeQuery(connection, userSQL);) {
+        try (ResultSet rs = connection.executeQuery(userSQL);) {
             if (!rs.next()) {
                 log.debug("get result is empty");
                 return null;
@@ -152,7 +152,7 @@ public class UserRepositorySQL implements UserRepository, Connectable {
         );
 
         List<User> users = new ArrayList<>();
-        try (ResultSet rs = executeQuery(connection, userSQL);) {
+        try (ResultSet rs = connection.executeQuery(userSQL);) {
             parseUsersInList(rs, users);
             if (users.isEmpty()) log.debug("result users is empty");
         } catch (SQLException e) {

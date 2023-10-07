@@ -3,7 +3,6 @@ package ru.mikehalko.kbju.web.filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.model.user.User;
-import ru.mikehalko.kbju.web.Context;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpFilter;
@@ -11,13 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import static java.util.Objects.nonNull;
-import static ru.mikehalko.kbju.util.sql.ConnectDataBase.*;
-import static ru.mikehalko.kbju.util.sql.ConnectDataBase.reconnectIfNeed;
 
-//Все страницы сайта обрабатывает данный фильтр
 public class AuthFilter extends HttpFilter {
     private final Logger log = LoggerFactory.getLogger(AuthFilter.class);
 
@@ -30,7 +25,6 @@ public class AuthFilter extends HttpFilter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         servletRequest.setCharacterEncoding("UTF-8");
         log.debug("auth filter");
-//        reconnectToDataBaseIfNeed(); // TODO реализовать иначе
         //получение данных сессии
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
@@ -45,16 +39,6 @@ public class AuthFilter extends HttpFilter {
         else notLogged(request, response, chain, loginRequest);
     }
 
-    private void reconnectToDataBaseIfNeed() {
-        try {
-            // TODO ловить исключение в репозиториях перед отправкой запроса? Чтобы переподключиться в тот момент
-            reconnectIfNeed(getConnectionHold(), Context.getHavingConnection());
-        } catch (SQLException | ClassNotFoundException e) {
-            log.debug("checkConnection fail");
-            throw new RuntimeException(e);
-        }
-    }
-
     private void logged(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                         HttpSession session, boolean loginRequest) throws ServletException, IOException {
         User user = (User) session.getAttribute("user");
@@ -66,7 +50,7 @@ public class AuthFilter extends HttpFilter {
             chain.doFilter(request, response);
         } else if (loginRequest) {
             log.debug("action = {}", action);
-            if (action != null && action.equals("update")) { // TODO очень плохой код
+            if (action != null && action.equals("update")) { // TODO need refactoring
                 log.debug("{}[{}] want update credentials; user goes on", user.getName(), user.getId());
                 chain.doFilter(request, response);
                 return;
@@ -92,9 +76,5 @@ public class AuthFilter extends HttpFilter {
     @Override
     public void destroy() {
         super.destroy();
-    }
-
-
-    private void reconnect() throws SQLException {
     }
 }
