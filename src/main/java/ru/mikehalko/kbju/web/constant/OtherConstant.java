@@ -1,8 +1,6 @@
-package ru.mikehalko.kbju.web.constant.attribute;
+package ru.mikehalko.kbju.web.constant;
 
-import ru.mikehalko.kbju.web.constant.Constant;
-
-public enum OtherAttribute implements Constant {
+public enum OtherConstant implements Constant {
 
     USER("user"),
     USER_EDIT("user_edit"),
@@ -16,7 +14,7 @@ public enum OtherAttribute implements Constant {
 
     private final String attributeValue;
 
-    private OtherAttribute(String attributeValue) {
+    private OtherConstant(String attributeValue) {
         this.attributeValue = attributeValue;
     }
 

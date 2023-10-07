@@ -10,8 +10,8 @@ import ru.mikehalko.kbju.repository.sql.UserCredentialRepositorySQL;
 import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
 import ru.mikehalko.kbju.util.web.RequestParser;
-import ru.mikehalko.kbju.util.web.validation.UserCredentialValidation;
-import ru.mikehalko.kbju.util.web.validation.UserValidation;
+import ru.mikehalko.kbju.util.web.validation.UserCredentialValidator;
+import ru.mikehalko.kbju.util.web.validation.UserValidator;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 import ru.mikehalko.kbju.web.cryption.Encryption;
 
@@ -26,8 +26,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 import static ru.mikehalko.kbju.util.web.RequestParser.parseString;
-import static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*;
-import static ru.mikehalko.kbju.web.constant.attribute.UserCredentialAttribute.*;
+import static ru.mikehalko.kbju.web.constant.OtherConstant.*;
+import static ru.mikehalko.kbju.web.constant.attribute.UserCredentialField.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
 import static ru.mikehalko.kbju.util.web.Util.*;
 
@@ -102,7 +102,7 @@ public class LoginServlet extends HttpServlet {
             return;
         } else {
             log.debug("credential not found");
-            UserCredentialValidation validation = new UserCredentialValidation();
+            UserCredentialValidator validation = new UserCredentialValidator();
             validation.invalid(PARAM_LOGIN);
             validation.invalid(PARAM_PASSWORD, "password or login is wrong");
             setAttribute(request, VALIDATOR_USER_CREDENTIAL, validation);
@@ -113,8 +113,8 @@ public class LoginServlet extends HttpServlet {
     private void register(HttpServletRequest request, HttpServletResponse response,
                           HttpSession session, boolean loginAfterRegistration) throws ServletException, IOException {
         log.debug("register");
-        var userValidation = new UserValidation();
-        var credentialValidation = new UserCredentialValidation();
+        var userValidation = new UserValidator();
+        var credentialValidation = new UserCredentialValidator();
         User userNew = RequestParser.user(request, userValidation);
         UserCredential credentialNew = RequestParser.credentialNew(request, userNew, credentialValidation);
         if (Objects.isNull(userNew) || Objects.isNull(credentialNew)) {
@@ -164,7 +164,7 @@ public class LoginServlet extends HttpServlet {
 
     private void updatePassword(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException, ServletException {
         log.debug("update password");
-        UserCredentialValidation validation = new UserCredentialValidation();
+        UserCredentialValidator validation = new UserCredentialValidator();
         User user = ServletSecurityUtil.getUserSession(request);
 
         // parse credential

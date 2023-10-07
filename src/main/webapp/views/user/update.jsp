@@ -1,9 +1,9 @@
-<%@ page import="ru.mikehalko.kbju.util.web.validation.UserValidation" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserAttribute.*" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*" %>
-<%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidation" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialAttribute.PARAM_PASSWORD_NEW" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialAttribute.*" %>
+<%@ page import="ru.mikehalko.kbju.util.web.validation.UserValidator" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserField.*" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.OtherConstant.*" %>
+<%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidator" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialField.PARAM_PASSWORD_NEW" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialField.*" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -42,8 +42,8 @@
                 <form id="update_user" method="post" action="user?action=update">
                     <h3>User Edit Form</h3>
                     <%
-                        UserValidation userValid = (UserValidation) request.getAttribute(VALIDATOR_USER.value());
-                        UserCredentialValidation credValid = (UserCredentialValidation) request.getAttribute(VALIDATOR_USER_CREDENTIAL.value());
+                        UserValidator userValid = (UserValidator) request.getAttribute(VALIDATOR_USER.value());
+                        UserCredentialValidator credValid = (UserCredentialValidator) request.getAttribute(VALIDATOR_USER_CREDENTIAL.value());
                         boolean userInvalid = userValid != null;
                         boolean credentialInvalid = credValid != null;
                         String messageUser = !userInvalid ? null : userValid.resultMessage();

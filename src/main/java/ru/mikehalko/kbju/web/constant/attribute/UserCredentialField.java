@@ -1,8 +1,6 @@
 package ru.mikehalko.kbju.web.constant.attribute;
 
-import ru.mikehalko.kbju.web.constant.Constant;
-
-public enum UserCredentialAttribute implements Constant {
+public enum UserCredentialField implements FieldAttribute {
 
     PARAM_LOGIN("login"),
     PARAM_PASSWORD("password"),
@@ -12,12 +10,17 @@ public enum UserCredentialAttribute implements Constant {
 
     private final String paramValue;
 
-    private UserCredentialAttribute(String paramValue) {
+    private UserCredentialField(String paramValue) {
         this.paramValue = paramValue;
     }
 
     public String value() {
         return paramValue;
+    }
+
+    @Override
+    public Field fieldType() {
+        return Field.USER_CREDENTIAL;
     }
 
     @Override

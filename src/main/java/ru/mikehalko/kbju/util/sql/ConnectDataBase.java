@@ -7,7 +7,6 @@ import ru.mikehalko.kbju.util.sql.exception.ConnectionPropertiesIncorrectExcepti
 import ru.mikehalko.kbju.util.sql.exception.DriverClassNotFoundException;
 import ru.mikehalko.kbju.util.sql.exception.PropertiesFileNotFoundException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 
@@ -97,7 +96,38 @@ public class ConnectDataBase {
     public static ResultSet executeQuery(Connection connection, String sql) throws SQLException {
         Statement statement = connection.createStatement();
         return statement.executeQuery(sql);
-    }
+    } // TODO reconnect
+
+    //private static boolean reconnect = true;
+//    public static ResultSet executeQuery(String sql) {
+//        ResultSet resultSet = null;
+//        try {
+//            Statement statement = connectionHold.createStatement();
+//            try {
+//                resultSet = statement.executeQuery(sql);
+//            } catch (SQLException e) {
+//                log.error("catch exception 2", e);
+//                if(!reconnect) {
+//                    log.debug("reconnect false, throw exception");
+//                    throw new RuntimeException(e);
+//                }
+//                else {
+//                    reconnect = false;
+//                    try {
+//                        setConnectionHold(connect());
+//                        return executeQuery(sql);
+//                    } catch (ClassNotFoundException ex) {
+//                        throw new RuntimeException(ex);
+//                    }
+//                }
+//            }
+//        } catch (SQLException e) {
+//            log.error("catch exception 1", e);
+//            throw new RuntimeException(e);
+//        }
+//
+//        return resultSet;
+//    }
 
     public static Connection reconnectIfNeed(Connection connect, Connectable... needReconnect) throws SQLException, ClassNotFoundException {
         return !checkConnection(connect) ? reconnect(needReconnect) : ConnectDataBase.connectionHold;

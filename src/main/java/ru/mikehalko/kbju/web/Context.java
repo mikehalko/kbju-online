@@ -19,8 +19,7 @@ import static ru.mikehalko.kbju.util.sql.ConnectDataBase.initConstantPropertiesA
 
 public class Context implements ServletContextListener {
     private final Logger log = LoggerFactory.getLogger(Context.class);
-    private static Connectable[] havingConnection;
-    private static final String DB_PROPERTIES_PATH = "/properties/db/postgres.properties";// TODO вписать во внешний файл конфигурации war
+    private static Connectable[] havingConnection;    private static final String DB_PROPERTIES_PATH = "/properties/db/postgres.properties";// TODO вписать во внешний файл конфигурации war
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

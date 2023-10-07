@@ -7,7 +7,7 @@ import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.UserRepository;
 import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
-import ru.mikehalko.kbju.util.web.validation.UserValidation;
+import ru.mikehalko.kbju.util.web.validation.UserValidator;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 
 import javax.servlet.ServletConfig;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import static ru.mikehalko.kbju.util.web.RequestParser.parseString;
 import static ru.mikehalko.kbju.util.web.RequestParser.user;
 import static ru.mikehalko.kbju.util.web.Util.*;
-import static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*;
+import static ru.mikehalko.kbju.web.constant.OtherConstant.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
 
 public class UserServlet extends HttpServlet {
@@ -63,7 +63,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("doPost");
 
-        UserValidation validation = new UserValidation();
+        UserValidator validation = new UserValidator();
         User updatedUser = user(request, validation);
         if (updatedUser == null) updatedUser = mockUser;
 
@@ -82,7 +82,7 @@ public class UserServlet extends HttpServlet {
         response.sendRedirect(POST_REDIRECT_AFTER_UPDATE);
     }
 
-    private void failPost(UserValidation validation, HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
+    private void failPost(UserValidator validation, HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
         log.debug("invalid data form = {}", validation.resultMessage());
         setAttribute(request, VALIDATOR_USER, validation);
         setAttribute(request, USER_EDIT, user);

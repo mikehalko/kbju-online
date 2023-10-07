@@ -1,8 +1,6 @@
 package ru.mikehalko.kbju.web.constant.attribute;
 
-import ru.mikehalko.kbju.web.constant.Constant;
-
-public enum UserAttribute implements Constant {
+public enum UserField implements FieldAttribute {
 
     PARAM_USER_ID("user_id"),
     PARAM_NAME("name"),
@@ -11,12 +9,17 @@ public enum UserAttribute implements Constant {
 
     private final String attributeValue;
 
-    private UserAttribute(String attributeValue) {
+    private UserField(String attributeValue) {
         this.attributeValue = attributeValue;
     }
 
     public String value() {
         return attributeValue;
+    }
+
+    @Override
+    public Field fieldType() {
+        return Field.USER;
     }
 
     @Override

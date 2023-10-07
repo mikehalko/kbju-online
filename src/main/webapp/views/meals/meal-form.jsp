@@ -1,7 +1,7 @@
 <%@ page import="ru.mikehalko.kbju.util.DateTimeUtil" %>
-<%@ page import="ru.mikehalko.kbju.util.web.validation.MealValidation" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.MealAttribute.*" %>
-<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.VALIDATOR_MEAL" %>
+<%@ page import="ru.mikehalko.kbju.util.web.validation.MealValidator" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.attribute.MealField.*" %>
+<%@ page import="static ru.mikehalko.kbju.web.constant.OtherConstant.VALIDATOR_MEAL" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -40,7 +40,7 @@
         <form id="create_meal" method="post" action="">
           <h3 class="create">Meal Create Form</h3>
           <h3 class="edit">Meal Edit Form</h3>
-          <% MealValidation valid = (MealValidation) request.getAttribute(VALIDATOR_MEAL.value());%>
+          <% MealValidator valid = (MealValidator) request.getAttribute(VALIDATOR_MEAL.value());%>
           <input id="meal_id" type="hidden" name="id" value="${meal.id}">
           <section id="sections">
             <section class="section">

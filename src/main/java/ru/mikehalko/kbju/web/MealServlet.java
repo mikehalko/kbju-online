@@ -18,16 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.util.web.RequestParser;
-import ru.mikehalko.kbju.util.web.validation.MealValidation;
+import ru.mikehalko.kbju.util.web.validation.MealValidator;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 
 import java.io.IOException;
 import java.util.List;
 
 import static ru.mikehalko.kbju.util.web.RequestParser.parseInt;
-import static ru.mikehalko.kbju.util.web.RequestParser.meal;
-import static ru.mikehalko.kbju.web.constant.attribute.MealAttribute.*;
-import static ru.mikehalko.kbju.web.constant.attribute.OtherAttribute.*;
+import static ru.mikehalko.kbju.web.constant.attribute.MealField.*;
+import static ru.mikehalko.kbju.web.constant.OtherConstant.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
 import static ru.mikehalko.kbju.util.web.Util.*;
 
@@ -102,7 +101,7 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         log.debug("doPost");
-        MealValidation validation = new MealValidation();
+        MealValidator validation = new MealValidator();
         Meal meal = RequestParser.meal(request, ServletSecurityUtil.getUserSession(request), validation);
         MealTo mealTo = meal != null ? MealsUtil.getTo(meal) : mockMealTo;
 
@@ -122,7 +121,7 @@ public class MealServlet extends HttpServlet {
         response.sendRedirect(POST_REDIRECT_AFTER_CREATE_MEAL_ACTION_GET_ID + meal.getId());
     }
 
-    private void failPost(MealValidation validation, HttpServletRequest request, HttpServletResponse response, MealTo meal) throws ServletException, IOException {
+    private void failPost(MealValidator validation, HttpServletRequest request, HttpServletResponse response, MealTo meal) throws ServletException, IOException {
         String message = validation.resultMessage();
         log.debug("invalid data form = {}", message);
         setAttribute(request, VALIDATOR_MEAL, validation);

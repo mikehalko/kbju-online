@@ -88,7 +88,6 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
             rs.next();
             access = rs.getInt(USER_CREDENTIAL_USER_ID) == credential.getUserId();
         } catch (SQLException e) {
-            log.error("GET INT AFTER UPDATE FAIL"); // TODO свой exc и убрать
             throw new RuntimeException(e);
         }
 
@@ -102,7 +101,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
 
     @Override
     public int find(UserCredential credential) {
-        log.debug("find credential={}", credential);
+        log.debug("find");
 
         String credentialFindSQL = String.format(
                 "SELECT %1$s FROM \"%2$s\" WHERE %3$s = '%4$s' AND %5$s = '%6$s';",
@@ -119,7 +118,7 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
                 findId = rs.getInt(USER_CREDENTIAL_USER_ID);
             }
         } catch (SQLException e) {
-            log.error("GET INT AFTER SELECT FAIL"); // TODO убрать и сделать exception
+            log.error("GET INT OR EXECUTE QUERY AFTER SELECT FAIL");
             throw new RuntimeException(e);
         }
 
@@ -128,13 +127,13 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
 
     @Override
     public boolean setLogin(UserCredential credential) {
-        log.debug("find login={}", credential); // TODO убрать..
+        log.debug("setLogin");
 
         if (credential == null || credential.getLogin() != null) {
-            throw new RuntimeException(); // TODO свой exception
+            throw new RuntimeException(); // TODO свои exception
         }
         if (credential.getUserId() <= 0) {
-            throw new RuntimeException(); // TODO свой exception
+            throw new RuntimeException();
         }
 
         String credentialFindSQL = String.format(
@@ -150,10 +149,9 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
                 findLogin = rs.getString(USER_CREDENTIAL_LOGIN);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e); // TODO свой exception
+            throw new RuntimeException(e);
         }
 
-        log.debug("find login = {}", findLogin); // TODO убрать
         if (findLogin == null || findLogin.isEmpty()) return false;
         credential.setLogin(findLogin);
         return true;
@@ -163,7 +161,6 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
     public boolean isUnique(String login) {
         log.debug("isUnique login={}", login);
 
-        // select count("name") from "user_credential" where "name" = 'lol';
         String loginUniqueSQL = String.format(
                 "SELECT COUNT(%1$s) FROM \"%2$s\" WHERE %3$s = '%4$s';",
                 USER_CREDENTIAL_LOGIN, USER_CREDENTIAL_TABLE, // 1 2
@@ -179,7 +176,6 @@ public class UserCredentialRepositorySQL implements UserCredentialRepository, Co
                 count = rs.getInt("count");
             }
         } catch (SQLException e) {
-            log.error("GET INT AFTER SELECT FAIL"); // TODO убрать и сделать exception
             throw new RuntimeException(e);
         }
 

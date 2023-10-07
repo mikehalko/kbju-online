@@ -1,8 +1,6 @@
 package ru.mikehalko.kbju.web.constant.attribute;
 
-import ru.mikehalko.kbju.web.constant.Constant;
-
-public enum MealAttribute implements Constant {
+public enum MealField implements FieldAttribute {
 
     PARAM_ID("id"),
     PARAM_DATE_TIME("dateTime"),
@@ -15,7 +13,7 @@ public enum MealAttribute implements Constant {
 
     private final String attributeValue;
 
-    private MealAttribute(String attributeValue) {
+    private MealField(String attributeValue) {
         this.attributeValue = attributeValue;
     }
 
@@ -23,7 +21,10 @@ public enum MealAttribute implements Constant {
         return attributeValue;
     }
 
-    // TODO перевод значения метод  
+    @Override
+    public Field fieldType() {
+        return Field.MEAL;
+    }
 
     @Override
     public String toString() {
