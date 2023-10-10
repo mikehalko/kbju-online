@@ -10,7 +10,7 @@ public interface UserCredentialRepository {
 
     boolean delete(UserCredential credential);
 
-    int find(UserCredential credential);
+    int find(UserCredential credential); // return 0 if not found
 
     boolean setLogin(UserCredential credential);
 

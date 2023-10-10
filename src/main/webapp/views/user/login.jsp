@@ -4,23 +4,23 @@
 <%@ page import="static ru.mikehalko.kbju.web.constant.OtherConstant.*" %>
 <%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidator" %>
 <%@ page import="ru.mikehalko.kbju.model.user.User" %>
-<%@ page import="ru.mikehalko.kbju.util.web.Util" %>
+<%@ page import="ru.mikehalko.kbju.util.web.WebUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0">
-    <title>Some Title</title>
-    <link rel="stylesheet" href="../../css/site.css">
-    <link rel="stylesheet" href="../../css/create.css">
-    <link rel="stylesheet" href="../../css/user-form.css">
-    <link rel="stylesheet" href="../../css/user-form-login.css">
-    <link rel="stylesheet" href="../../css/validation_form.css">
-    <link rel="stylesheet" href="../../css/validation_form_user_update.css">
+    <title>KBJU | Auth</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/create.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user-form.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user-form-login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/validation_form.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/validation_form_user_update.css">
     <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
-    <script src="../../scripts/auth.js"></script>
-    <script src="../../scripts/fail-message.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/auth.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/fail-message.js"></script>
 </head>
 <body>
 <%
@@ -28,25 +28,26 @@
     UserCredentialValidator credValid = (UserCredentialValidator) request.getAttribute(VALIDATOR_USER_CREDENTIAL.value());
     boolean userInvalid = userValid != null;
     boolean credentialInvalid = credValid != null;
+    boolean formLoginType = (!userInvalid && !credentialInvalid) || (credentialInvalid && !userInvalid);
 
     String userName = "";
     int calMin = 0;
     int calMax = 0;
     if (userInvalid) {
-        User user = (User) Util.getAttribute(request, USER);
+        User user = (User) WebUtil.getAttribute(request, USER);
         userName = user.getName();
         calMin = user.getCaloriesMin();
         calMax = user.getCaloriesMax();
     }
     String login = "";
     if (credentialInvalid) {
-        login = Util.getAttributeString(request, PARAM_LOGIN);
+        login = WebUtil.getAttributeString(request, PARAM_LOGIN);
     }
 %>
 
 <div id="block_top_panel">
     <div id="location_path">
-        <a class="link" href="../../index.html">main page</a> >> <a class="link" href="">auth page</a>
+        <a class="link" href="${pageContext.request.contextPath}/">main page</a> >> <a class="link" href="">auth page</a>
     </div>
 </div>
 
@@ -64,8 +65,7 @@
                         <section class="section">
                             <div class="input_container">
                                 <input id="id" class="" type="text" name="<%=PARAM_USER_ID%>" placeholder=" " value="0" hidden="hidden"/>
-<%--                                TODO "name" значения констант --%>
-                                <input id="login" class="<%= credValid == null ? "" : credValid.isValid(PARAM_LOGIN) ? "" : "fail_field"%>" type="text" name="login" placeholder=" " <%= credentialInvalid ? "value=\""+ login + "\"" : ""%>/>
+                                <input id="login" class="<%= credValid == null ? "" : credValid.isValid(PARAM_LOGIN) ? "" : "fail_field"%>" type="text" name="login" placeholder=" " <%= login != null ? "value=\""+ login + "\"" : ""%>/>
                                 <label>login</label>
                             </div>
                             <div class="input_container log">
@@ -113,7 +113,7 @@
                             <button class="log" name="submit" type="submit">login</button>
                             <button onclick="window.history.back()" type="button">cancel</button>
                         </section>
-                        <p id="note"><input id="reg_checkbox" type="checkbox" name="checkboxname" <%= credentialInvalid ? "checked" : ""%>/>
+                        <p id="note"><input id="reg_checkbox" type="checkbox" name="checkboxname" <%= formLoginType ? "" : "checked"%>/>
                             <label for="reg_checkbox">SIGN UP</label></p>
                     </section>
 

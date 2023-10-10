@@ -5,7 +5,7 @@
     <jmxConfigurator/>
 
     <appender name="file" class="ch.qos.logback.core.FileAppender">
-        <file>${KBJU_ROOT}/log/kbju.log</file>
+        <file>${KBJU_LOG}/kbju.log</file>
 
         <encoder>
             <charset>UTF-8</charset>

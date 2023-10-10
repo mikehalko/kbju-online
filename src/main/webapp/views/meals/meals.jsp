@@ -5,16 +5,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Meals</title>
-    <link rel="stylesheet" href="../../css/site.css">
-    <link rel="stylesheet" href="../../css/miniprofile.css">
-    <link rel="stylesheet" href="../../css/meals-table.css">
+    <title>KBJU | Your Meals</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/other.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/miniprofile.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/meals-table.css">
 </head>
 <body>
 
 <div id="block_top_panel">
     <div id="location_path">
-        <a class="link" href="../../index.html">meal page</a> >> <a class="link" href="meals">list of meals</a>
+        <a class="link" href="${pageContext.request.contextPath}/">main page</a> >> <a class="link" href="meals?action=get_all">list of meals</a>
     </div>
 </div>
 
@@ -55,7 +56,6 @@
                         <c:forEach items="${requestScope.list}" var="meal">
                             <jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo"/>
                             <tr class="${meal.excess ? 'excess' : meal.shortage ? 'shortage' : 'normal'}">
-<%--                                 TODO Date сделать без года--%>
                                 <td class="date"><a><%=DateTimeUtil.toString(meal.getDateTime())%></a></td>
                                 <td class="description"><a>${meal.description}</a></td>
                                 <td class="calories"><a>${meal.calories}</a></td>
@@ -75,13 +75,14 @@
     <div id="block_right_panel">
         <section class="mini_profile">
             <jsp:useBean id="user" type="ru.mikehalko.kbju.model.user.User" scope="session"/>
-            <a id="user_login">USER_LOGIN</a>
+            <jsp:useBean id="login" class="java.lang.String" scope="session"/>
+            <p id="user_login"><a class="user_login_class">${login}</a></p>
             <p class="profile_info_line"><label for="user_name">name:</label><a id="user_name">${user.name}</a></p>
             <p class="profile_info_line"><label for="user_calories_min">calories (min):</label><a id="user_calories_min">${user.caloriesMin}</a></p>
             <p class="profile_info_line"><label for="user_calories_max">calories (max):</label><a id="user_calories_max">${user.caloriesMax}</a></p>
         </section>
         <menu>
-            <li><a class="menu_button" href="meals">meals</a></li>
+            <li><a class="menu_button" href="meals?action=get_all">meals</a></li>
             <li><a class="menu_button" href="user?action=get">profile</a></li>
             <li><a class="menu_button" href="login?action=out">logout</a></li>
         </menu>

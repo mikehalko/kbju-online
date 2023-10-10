@@ -10,23 +10,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0">
-  <title>Some Title</title>
-  <link rel="stylesheet" href="../../css/site.css">
-  <link rel="stylesheet" href="../../css/miniprofile.css">
-  <link rel="stylesheet" href="../../css/create.css">
-  <link rel="stylesheet" href="../../css/meal-form.css">
-  <link rel="stylesheet" href="../../css/validation_form.css">
-  <link rel="stylesheet" href="../../css/validation_form_meal.css">
+  <title>KBJU | Edit Meal</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/other.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/miniprofile.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/create.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/meal-form.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/validation_form.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/validation_form_meal.css">
   <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
-  <script src="../../scripts/meal-form.js"></script>
-  <script src="../../scripts/fail-message.js"></script>
+  <script src="${pageContext.request.contextPath}/scripts/meal-form.js"></script>
+  <script src="${pageContext.request.contextPath}/scripts/fail-message.js"></script>
 </head>
 <body>
 <jsp:useBean id="meal" type="ru.mikehalko.kbju.to.MealTo" scope="request"/>
 
 <div id="block_top_panel">
   <div id="location_path">
-    <a class="link" href="../../index.html">main page</a> >> <a class="link" href="meals">list of meals</a>
+    <a class="link" href="${pageContext.request.contextPath}/">main page</a> >> <a class="link" href="meals?action=get_all">list of meals</a>
     <a style="display: none" class="create"> >> </a><a href="" class="create link" style="display: none">create new meal</a>
     <a style="display: none" class="edit"> >> </a><a style="display: none" class="edit link" href="?action=get&id=${meal.id}">the meal</a><a style="display: none" class="edit"> >> </a><a href="" class="edit link" style="display: none">edit meal</a>
   </div>
@@ -91,7 +92,7 @@
 
             <section id="buttons">
               <button name="submit" type="submit" id="meal-submit">save</button>
-              <button onclick="window.history.back()" type="button">cancel</button> <!-- // TODO если ошибка - вернет не туда -->
+              <button onclick="location.href = 'meals?action=get_all'" type="button">cancel</button>
             </section>
             <p id="note">* - enter "0" calories, then the calculation will be made based on the amount of proteins, fats and carbohydrates.</p>
           </section>
@@ -104,13 +105,14 @@
   <div id="block_right_panel">
     <section class="mini_profile">
       <jsp:useBean id="user" class="ru.mikehalko.kbju.model.user.User" scope="session"/>
-      <a id="user_login">USER_LOGIN</a>
+      <jsp:useBean id="login" class="java.lang.String" scope="session"/>
+      <p id="user_login"><a class="user_login_class">${login}</a></p>
       <p class="profile_info_line"><label for="user_name">name:</label><a id="user_name">${user.name}</a></p>
       <p class="profile_info_line"><label for="user_calories_min">calories (min):</label><a id="user_calories_min">${user.caloriesMin}</a></p>
       <p class="profile_info_line"><label for="user_calories_max">calories (max):</label><a id="user_calories_max">${user.caloriesMax}</a></p>
     </section>
     <menu>
-      <li><a class="menu_button" href="meals">meals</a></li>
+      <li><a class="menu_button" href="meals?action=get_all">meals</a></li>
       <li><a class="menu_button" href="user?action=get">profile</a></li>
       <li><a class="menu_button" href="login?action=out">logout</a></li>
     </menu>

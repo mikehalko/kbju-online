@@ -39,7 +39,7 @@ public class TestData {
     public static final Meal MEAL_9 = new Meal(9, null, LocalDateTime.parse("2023-09-03T19:50:32"), 218, "test_9_day-3", new Nutritionally(22, 24, 7, 641));
 
 
-    public static final String POSTGRES_PROPERTIES_PATH = "src/main/resources/db/postgres.properties";
+    public static final String POSTGRES_PROPERTIES_PATH = System.getenv("KBJU_PROPERTIES");
     public static final String PREPARE_DB_SQL_PATH = "src/test/java/ru/mikehalko/kbju/resources/sql/prepareDB.sql";
     public static final String CLEAN_AND_INIT_SQL_PATH = "src/test/java/ru/mikehalko/kbju/resources/sql/cleanAndInit.sql";
     public static final String DROP_TEST_TABLES_SQL_PATH = "src/test/java/ru/mikehalko/kbju/resources/sql/dropTestTables.sql";

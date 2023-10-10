@@ -1,5 +1,6 @@
 package ru.mikehalko.kbju.web.constant.parameter;
 
+import ru.mikehalko.kbju.util.web.exception.NotMatchParameterException;
 import ru.mikehalko.kbju.web.constant.Constant;
 
 import java.util.HashMap;
@@ -40,13 +41,11 @@ public enum Parameter implements Constant {
         return paramValue;
     }
 
-    public static Parameter byValue(String name) {
+    public static Parameter byValue(String name) throws NotMatchParameterException {
         try {
             return Parameter.values()[valuesKeysMap.get(name)];
         } catch (NullPointerException ignored) {
-            throw new IllegalArgumentException(Parameter.class.getName() +
-                    " enum type has no constant with the specified name = " +
-                    name);
+            throw new NotMatchParameterException(name);
         }
     }
 

@@ -4,20 +4,30 @@ import ru.mikehalko.kbju.web.constant.Constant;
 import ru.mikehalko.kbju.web.constant.attribute.FieldAttribute;
 
 
+
 public abstract class Validator <T extends FieldAttribute> implements Validation {
     private static final String SEPARATOR = ";\n";
     public static final String MESSAGE_MUST_BE_HIGHER = "%s must be higher %s";
     public static final String MESSAGE_MUST_BE_LOWER = "%s must be lower %s";
+    public static final String MESSAGE_CANT_BE_EMPTY = "%s cant be empty";
 
     private StringBuilder message;
     private boolean valid = true;
     private final FailFields failFields = new FailFields();
 
+    @Override
     public abstract Constant attribute();
 
+    @Override
     public void catchEx(Constant param, Exception exception) {
         invalid();
         message.append(exception.getClass().getName()).append(" for field ").append(param.value()).append(SEPARATOR);
+    }
+
+    @Override
+    public void invalid() {
+        createMessageIfNull();
+        this.valid = false;
     }
 
     public void invalid(T field) {
@@ -30,15 +40,12 @@ public abstract class Validator <T extends FieldAttribute> implements Validation
         appendWithSeparator(message);
     }
 
-    public void invalid() {
-        createMessageIfNull();
-        this.valid = false;
-    }
-
+    @Override
     public boolean isValid() {
         return valid;
     }
 
+    @Override
     public boolean isNotValid() {
         return !isValid();
     }
@@ -51,6 +58,10 @@ public abstract class Validator <T extends FieldAttribute> implements Validation
         return failFields.isNoValid(field);
     }
 
+    public void empty(T field) {
+        invalid(field, String.format(MESSAGE_CANT_BE_EMPTY, field));
+    }
+
 
     public String resultMessage() {
         return message != null ? message.toString() : "";
@@ -61,12 +72,12 @@ public abstract class Validator <T extends FieldAttribute> implements Validation
     }
 
 
-    protected void appendMustBeHigher(String param, Object value) {
-        appendWithSeparator(String.format(MESSAGE_MUST_BE_HIGHER, param, value));
+    protected void appendMustBeHigher(T field, Object value) {
+        appendWithSeparator(String.format(MESSAGE_MUST_BE_HIGHER, field, value));
     }
 
-    protected void appendMustBeLower(String param, Object value) {
-        appendWithSeparator(String.format(MESSAGE_MUST_BE_LOWER, param, value));
+    protected void appendMustBeLower(T field, Object value) {
+        appendWithSeparator(String.format(MESSAGE_MUST_BE_LOWER, field, value));
     }
 
     protected void appendWithSeparator(String text) {

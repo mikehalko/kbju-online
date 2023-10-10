@@ -11,8 +11,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0">
-    <title>Update meal</title>
+    <title>KBJU | Edit Profile</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/other.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/miniprofile.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/create.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user-form.css">
@@ -20,14 +21,14 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/validation_form_user_update.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/inactive.css">
     <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
-    <script src="../../scripts/update-user.js"></script>
-    <script src="../../scripts/fail-message.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/update-user.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/fail-message.js"></script>
 </head>
 <body>
 
 <div id="block_top_panel">
     <div id="location_path">
-        <a class="link" href="../../index.html">main page</a> >> <a class="link" href="">user edit</a>
+        <a class="link" href="${pageContext.request.contextPath}">main page</a> >> <a class="link" href="">user edit</a>
     </div>
 </div>
 
@@ -76,9 +77,7 @@
                             </div>
                         </section>
 
-<%--                        TODO не работает    --%>
                         <section class="section">
-                            <%--                        TODO login положить скрыто?    --%>
                             <div class="input_container">
                                 <input id="password-old" class="credential_update <%= passwordOld%>" type="password" name="password_old" placeholder=" "/>
                                 <label class="credential_update">old password</label>
@@ -104,7 +103,7 @@
                         </section>
                         <section id="buttons">
                             <button name="submit" type="submit">save</button>
-                            <button onclick="window.history.back()" type="button">cancel</button> <!-- // TODO если ошибка - вернет не туда -->
+                            <button onclick="location.href = 'user?action=get'" type="button">cancel</button>
                             <input id="switch_checkbox" type="checkbox" name="switch_checkbox" <%= credentialInvalid ? "checked" : ""%>/>
                             <label for="switch_checkbox">change password (only)</label>
                         </section>
@@ -119,13 +118,14 @@
     <div id="block_right_panel">
         <section class="mini_profile">
             <jsp:useBean id="user" type="ru.mikehalko.kbju.model.user.User" scope="session"/>
-            <a id="user_login">USER_LOGIN</a>
+            <jsp:useBean id="login" class="java.lang.String" scope="session"/>
+            <p id="user_login"><a class="user_login_class">${login}</a></p>
             <p class="profile_info_line"><label for="user_name">name:</label><a id="user_name">${user.name}</a></p>
             <p class="profile_info_line"><label for="user_calories_min">calories (min):</label><a id="user_calories_min">${user.caloriesMin}</a></p>
             <p class="profile_info_line"><label for="user_calories_max">calories (max):</label><a id="user_calories_max">${user.caloriesMax}</a></p>
         </section>
         <menu>
-            <li><a class="menu_button" href="meals">meals</a></li>
+            <li><a class="menu_button" href="meals?action=get-all">meals</a></li>
             <li><a class="menu_button" href="user?action=get">profile</a></li>
             <li><a class="menu_button" href="login?action=out">logout</a></li>
         </menu>

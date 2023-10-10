@@ -145,7 +145,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
 
     @Override
     public List<Meal> getAll(int userId) {
-        log.debug("selectAll");
+        log.debug("getAll by {}", userId);
         String mealsSQL = String.format(
                 "SELECT * FROM \"%1$s\" WHERE %2$s = %3$d;",
                 MEAL_TABLE, USER_ID, userId
@@ -159,7 +159,7 @@ public class MealRepositorySQL implements MealRepository, Connectable {
             throw new RuntimeException(e);
         }
 
-        log.debug("selectAll result = {}", meals);
+        log.debug("getAll result = {}", meals);
 
         return meals;
     }

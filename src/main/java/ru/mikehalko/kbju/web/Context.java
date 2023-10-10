@@ -9,7 +9,6 @@ import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.sql.ConnectionDataBase;
 import ru.mikehalko.kbju.util.sql.ConstantProperties;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.IOException;
@@ -18,17 +17,18 @@ import java.util.Objects;
 
 public class Context implements ServletContextListener {
     private final Logger log = LoggerFactory.getLogger(Context.class);
-    private static Connectable[] havingConnection;    private static final String DB_PROPERTIES_PATH = "/properties/db/postgres.properties";// TODO вписать во внешний файл конфигурации war
+    private static Connectable[] havingConnection;
     private static ConnectionDataBase connection;
+
+    private static final String DB_PROPERTIES_PATH = System.getenv("KBJU_PROPERTIES");
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.debug("app initialization");
-        ServletContext servletContext = sce.getServletContext();
-        String realPathDbProperties = servletContext.getRealPath(DB_PROPERTIES_PATH);
-        log.debug("real path db.properties = {}", realPathDbProperties);
+        log.debug("servlet context path = {}", sce.getServletContext().getContextPath());
+        log.debug("path db.properties = {}", DB_PROPERTIES_PATH);
         try {
-            ConstantProperties.initProperties(realPathDbProperties);
+            ConstantProperties.initProperties(DB_PROPERTIES_PATH);
             connection = ConnectionDataBase.getConnection(
                     ConstantProperties.DB_URL, ConstantProperties.DB_USER,
                     ConstantProperties.DB_PASS, ConstantProperties.DB_CLASS_DRIVER);

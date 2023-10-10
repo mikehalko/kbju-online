@@ -7,6 +7,7 @@ import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.UserRepository;
 import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
+import ru.mikehalko.kbju.util.web.exception.BadParameterException;
 import ru.mikehalko.kbju.util.web.validation.UserValidator;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 
@@ -17,9 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static ru.mikehalko.kbju.util.web.RequestParser.parseString;
-import static ru.mikehalko.kbju.util.web.RequestParser.user;
-import static ru.mikehalko.kbju.util.web.Util.*;
+import static ru.mikehalko.kbju.util.web.RequestParameterParser.parseString;
+import static ru.mikehalko.kbju.util.web.validation.ValidateParser.*;
+import static ru.mikehalko.kbju.util.web.WebUtil.*;
 import static ru.mikehalko.kbju.web.constant.OtherConstant.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
 
@@ -45,17 +46,22 @@ public class UserServlet extends HttpServlet {
         User user = ServletSecurityUtil.getUserSession(request);
         setAttribute(request, USER_EDIT, user);
 
-        String action = parseString(request, ACTION); // TODO action null -> свой exception с ответом стр не найдена неверный запрос
-        if (action == null || action.isEmpty()) action = ACTION_GET.value();
-        switch (Parameter.byValue(action)) {
-            case ACTION_GET:
-                log.debug("action {} for user = {}", action, user);
-                forward(request, response, GET_FORWARD_SHOW);
-                break;
-            case ACTION_UPDATE:
-                log.debug("action {} for user = {}", action, user);
-                forward(request, response, GET_FORWARD_UPDATE);
-                break;
+        String action = null;
+        try {
+            action = parseString(request, ACTION);
+            switch (Parameter.byValue(action)) {
+                case ACTION_GET:
+                    log.debug("action {} for user = {}", action, user);
+                    forward(request, response, GET_FORWARD_SHOW);
+                    return;
+                case ACTION_UPDATE:
+                    log.debug("action {} for user = {}", action, user);
+                    forward(request, response, GET_FORWARD_UPDATE);
+                    return;
+            }
+        } catch (BadParameterException e) {
+            sendErrorBadRequest(response, e.getMessage(), this);
+            return;
         }
     }
 
@@ -63,27 +69,35 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("doPost");
 
-        UserValidator validation = new UserValidator();
-        User updatedUser = user(request, validation);
-        if (updatedUser == null) updatedUser = mockUser;
+        String action = null;
+        try {
+            action = parseString(request, ACTION);
+            switch (Parameter.byValue(action)) {
+                case ACTION_UPDATE:
+                    UserValidator validation = new UserValidator();
+                    User updatedUser = user(request, validation);
+                    if (validation.isNotValid()) {
+                        fail(request, response, updatedUser, validation);
+                        return;
+                    }
 
-        log.debug("VALIDATION = {}", validation.isValid());
-        if (validation.isNotValid()) {
-            failPost(validation, request, response, updatedUser);
+                    if (ServletSecurityUtil.getUserSession(request).getId() == updatedUser.getId()) {
+                        ServletSecurityUtil.setUserSession(request, userRepository.save(updatedUser));
+                        log.debug("save {}", updatedUser);
+                    } else {
+                        log.error("auth.id != updated.id");
+                    }
+                    response.sendRedirect(POST_REDIRECT_AFTER_UPDATE);
+                    return;
+            }
+        } catch (BadParameterException e) {
+            sendErrorBadRequest(response, e.getMessage(), this);
             return;
         }
-
-        if (ServletSecurityUtil.getUserSession(request).getId() == updatedUser.getId()) {
-            ServletSecurityUtil.setUserSession(request, userRepository.save(updatedUser));
-            log.debug("save {}", updatedUser);
-        } else {
-            log.error("auth.id != updated.id");
-        }
-        response.sendRedirect(POST_REDIRECT_AFTER_UPDATE);
     }
 
-    private void failPost(UserValidator validation, HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
-        log.debug("invalid data form = {}", validation.resultMessage());
+    private void fail(HttpServletRequest request, HttpServletResponse response, User user, UserValidator validation) throws ServletException, IOException {
+        log.debug("fail");
         setAttribute(request, VALIDATOR_USER, validation);
         setAttribute(request, USER_EDIT, user);
         forward(request, response, GET_FORWARD_UPDATE);

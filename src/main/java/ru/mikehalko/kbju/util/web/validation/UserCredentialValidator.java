@@ -18,23 +18,28 @@ public class UserCredentialValidator extends Validator<UserCredentialField> {
         return OtherConstant.VALIDATOR_USER_CREDENTIAL;
     }
 
+    @Override
+    public void empty(UserCredentialField field) {
+        super.empty(field);
+    }
+
     public void login(String name) {
         if (name.length() < LOGIN_LENGTH_MIN) {
             invalid(PARAM_LOGIN);
-            appendMustBeHigher(PARAM_LOGIN.value(), LOGIN_LENGTH_MIN);
+            appendMustBeHigher(PARAM_LOGIN, LOGIN_LENGTH_MIN);
         } else if (name.length() > LOGIN_LENGTH_MAX) {
             invalid(PARAM_LOGIN);
-            appendMustBeLower(PARAM_LOGIN.value(), LOGIN_LENGTH_MAX);
+            appendMustBeLower(PARAM_LOGIN, LOGIN_LENGTH_MAX);
         }
     }
 
     public void password(String pass) {
         if (pass.length() < PASSWORD_LENGTH_MIN) {
             invalid(PARAM_PASSWORD_NEW);
-            appendMustBeHigher(PARAM_PASSWORD_NEW.value(), PASSWORD_LENGTH_MIN);
+            appendMustBeHigher(PARAM_PASSWORD_NEW, PASSWORD_LENGTH_MIN);
         } else if (pass.length() > PASSWORD_LENGTH_MAX) {
             invalid(PARAM_PASSWORD_NEW);
-            appendMustBeLower(PARAM_PASSWORD_NEW.value(), PASSWORD_LENGTH_MAX);
+            appendMustBeLower(PARAM_PASSWORD_NEW, PASSWORD_LENGTH_MAX);
         }
     }
 
