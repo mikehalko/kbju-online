@@ -1,3 +1,11 @@
 .user_form {
     margin-left: 10vw;
 }
+
+#buttons {
+    width: 60%; !important;
+}
+
+.user_form {
+    min-height: 340px; !important;
+}

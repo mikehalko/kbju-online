@@ -36,7 +36,7 @@ public class MealValidator extends Validator<MealField> {
             createMessageIfNull();
             invalid();
             invalid(PARAM_ID);
-            appendMustBeHigher(PARAM_ID, id);
+            appendMustBeHigher(PARAM_ID, ID_MIN);
         }
     }
 
@@ -48,11 +48,11 @@ public class MealValidator extends Validator<MealField> {
             createMessageIfNull();
             invalid();
             invalid(PARAM_DESCRIPTION);
-            appendMustBeHigher(PARAM_DESCRIPTION, description);
+            appendMustBeHigher(PARAM_DESCRIPTION, DESCRIPTION_MIN_LENGTH);
         } else if (description.length() > DESCRIPTION_MAX_LENGTH) {
             createMessageIfNull();
             invalid(PARAM_DESCRIPTION);
-            appendMustBeLower(PARAM_DESCRIPTION, description);
+            appendMustBeLower(PARAM_DESCRIPTION, DESCRIPTION_MAX_LENGTH);
         }
     }
 

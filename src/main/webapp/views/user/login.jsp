@@ -98,28 +98,32 @@
                         </section>
 
                     </section>
-
-                    <section id="under_form">
-                        <section id="fail_message_section">
-                            <div id="fail_area" style="display: none">
-                                <% String message_user = userValid == null ? null : userValid.resultMessage();%>
-                                <%= message_user != null ? "<p class=\"fail_message_text\">" + message_user + "</p>" : "" %>
-                                <% String message_cred = credValid == null ? null : credValid.resultMessage();%>
-                                <%= message_cred != null ? "<p class=\"fail_message_text\">" + message_cred + "</p>" : "" %>
-                            </div>
-                        </section>
-                        <section id="buttons">
-                            <button class="reg" style="display: none" name="submit" type="submit">register</button>
-                            <button class="log" name="submit" type="submit">login</button>
-                            <button onclick="window.history.back()" type="button">cancel</button>
-                        </section>
-                        <p id="note"><input id="reg_checkbox" type="checkbox" name="checkboxname" <%= formLoginType ? "" : "checked"%>/>
-                            <label for="reg_checkbox">SIGN UP</label></p>
-                    </section>
-
                 </form>
+                <section id="under_form">
+                    <section id="fail_message_section">
+                        <div id="fail_area" style="display: none">
+                            <% String message_user = userValid == null ? null : userValid.resultMessage();%>
+                            <%= message_user != null ? "<p class=\"fail_message_text\">" + message_user + "</p>" : "" %>
+                            <% String message_cred = credValid == null ? null : credValid.resultMessage();%>
+                            <%= message_cred != null ? "<p class=\"fail_message_text\">" + message_cred + "</p>" : "" %>
+                        </div>
+                    </section>
+                    <section id="buttons">
+                        <button form="user_form" class="reg" style="display: none" name="submit" type="submit">register</button>
+                        <button form="user_form" class="log" name="submit" type="submit">login</button>
+                        <button onclick="location.href = 'index.html'" type="button">cancel</button>
+                        <form id="test_form" method="post" action="login?action=login">
+                            <input type="text" name="login" value="USER_1" hidden="hidden">
+                            <input type="password" name="password" value="111" hidden="hidden">
+                            <button form="test_form" type="submit">тест аккаунт</button>
+                        </form>
+                    </section>
+                    <p id="note">
+                        <input id="reg_checkbox" type="checkbox" name="checkboxname" <%= formLoginType ? "" : "checked"%>/>
+                        <label for="reg_checkbox">SIGN UP</label>
+                    </p>
+                </section>
             </section>
-
         </div>
     </div>
 

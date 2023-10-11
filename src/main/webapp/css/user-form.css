@@ -82,8 +82,10 @@
     min-height: 30px;
 }
 #note {
+    width:40%;
     margin: 10px;
     box-sizing: border-box;
+    text-align: right;
 }
 
 #buttons {

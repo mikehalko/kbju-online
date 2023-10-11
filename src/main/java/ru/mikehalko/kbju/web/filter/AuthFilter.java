@@ -17,12 +17,12 @@ import java.io.IOException;
 import static java.util.Objects.nonNull;
 import static ru.mikehalko.kbju.util.security.ServletSecurityUtil.ATTRIBUTE_USER;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
-import static ru.mikehalko.kbju.web.login.LoginServlet.HOME_PAGE;
 
 public class AuthFilter extends HttpFilter {
     private final Logger log = LoggerFactory.getLogger(AuthFilter.class);
 
     public static final String POST_REDIRECT_LOGIN_ALREADY = "meals" + "?" + ACTION + "=" + ACTION_GET_ALL;
+    public static final String GUEST_REDIRECT = "login?" + ACTION + "=" + ACTION_LOGIN;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -78,7 +78,7 @@ public class AuthFilter extends HttpFilter {
             chain.doFilter(request, response);
         } else {
             log.debug("guest does not have access, redirect to home page");
-            response.sendRedirect(HOME_PAGE);
+            response.sendRedirect(GUEST_REDIRECT);
         }
     }
 
