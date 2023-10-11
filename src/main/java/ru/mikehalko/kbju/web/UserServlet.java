@@ -7,8 +7,8 @@ import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.repository.UserRepository;
 import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
-import ru.mikehalko.kbju.util.web.exception.BadParameterException;
-import ru.mikehalko.kbju.util.web.validation.UserValidator;
+import ru.mikehalko.kbju.web.exception.BadParameterException;
+import ru.mikehalko.kbju.web.validation.UserValidator;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 
 import javax.servlet.ServletConfig;
@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static ru.mikehalko.kbju.util.web.RequestParameterParser.parseString;
-import static ru.mikehalko.kbju.util.web.validation.ValidateParser.*;
-import static ru.mikehalko.kbju.util.web.WebUtil.*;
+import static ru.mikehalko.kbju.web.util.RequestParameterParser.parseString;
+import static ru.mikehalko.kbju.web.validation.ValidateParser.*;
+import static ru.mikehalko.kbju.web.util.WebUtil.*;
 import static ru.mikehalko.kbju.web.constant.OtherConstant.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
 

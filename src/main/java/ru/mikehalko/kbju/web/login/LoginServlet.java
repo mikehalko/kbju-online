@@ -9,11 +9,11 @@ import ru.mikehalko.kbju.repository.UserRepository;
 import ru.mikehalko.kbju.repository.sql.UserCredentialRepositorySQL;
 import ru.mikehalko.kbju.repository.sql.UserRepositorySQL;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
-import ru.mikehalko.kbju.util.web.exception.BadParameterException;
-import ru.mikehalko.kbju.util.web.exception.EmptyParameterException;
-import ru.mikehalko.kbju.util.web.exception.NotExistParameterException;
-import ru.mikehalko.kbju.util.web.validation.UserCredentialValidator;
-import ru.mikehalko.kbju.util.web.validation.UserValidator;
+import ru.mikehalko.kbju.web.exception.BadParameterException;
+import ru.mikehalko.kbju.web.exception.EmptyParameterException;
+import ru.mikehalko.kbju.web.exception.NotExistParameterException;
+import ru.mikehalko.kbju.web.validation.UserCredentialValidator;
+import ru.mikehalko.kbju.web.validation.UserValidator;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 import ru.mikehalko.kbju.web.cryption.Encryption;
 
@@ -26,12 +26,12 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import static ru.mikehalko.kbju.util.web.RequestParameterParser.*;
-import static ru.mikehalko.kbju.util.web.validation.ValidateParser.*;
+import static ru.mikehalko.kbju.web.util.RequestParameterParser.*;
+import static ru.mikehalko.kbju.web.validation.ValidateParser.*;
 import static ru.mikehalko.kbju.web.constant.OtherConstant.*;
 import static ru.mikehalko.kbju.web.constant.attribute.UserCredentialField.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;
-import static ru.mikehalko.kbju.util.web.WebUtil.*;
+import static ru.mikehalko.kbju.web.util.WebUtil.*;
 
 public class LoginServlet extends HttpServlet {
     public static final String HOME_PAGE = "index.html";

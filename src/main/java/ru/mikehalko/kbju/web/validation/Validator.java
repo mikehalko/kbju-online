@@ -1,4 +1,4 @@
-package ru.mikehalko.kbju.util.web.validation;
+package ru.mikehalko.kbju.web.validation;
 
 import ru.mikehalko.kbju.web.constant.Constant;
 import ru.mikehalko.kbju.web.constant.attribute.FieldAttribute;

@@ -1,5 +1,5 @@
 <%@ page import="ru.mikehalko.kbju.util.DateTimeUtil" %>
-<%@ page import="ru.mikehalko.kbju.util.web.validation.MealValidator" %>
+<%@ page import="ru.mikehalko.kbju.web.validation.MealValidator" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.MealField.*" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.OtherConstant.VALIDATOR_MEAL" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -123,6 +123,7 @@
 <footer>
   <div>
     <a>defezis 2023</a>
+    <a href="https://github.com/mikehalko/kbju-online">github</a>
   </div>
 </footer>
 

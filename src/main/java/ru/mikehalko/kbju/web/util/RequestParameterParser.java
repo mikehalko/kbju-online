@@ -1,9 +1,9 @@
-package ru.mikehalko.kbju.util.web;
+package ru.mikehalko.kbju.web.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.mikehalko.kbju.util.web.exception.NotExistParameterException;
-import ru.mikehalko.kbju.util.web.exception.EmptyParameterException;
+import ru.mikehalko.kbju.web.exception.NotExistParameterException;
+import ru.mikehalko.kbju.web.exception.EmptyParameterException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -40,18 +40,4 @@ public class RequestParameterParser {
             throws EmptyParameterException, NotExistParameterException, DateTimeParseException {
         return LocalDateTime.parse(parseString(request, param));
     }
-//
-//    public static Meal meal(HttpServletRequest request, User user)
-//            throws ParameterNotExistException, ParameterIsEmptyException {
-//        int id = parseInt(request, MealField.PARAM_ID);
-//        LocalDateTime dateTime = localDateTime(request, MealField.PARAM_DATE_TIME);
-//        String description = parseString(request, MealField.PARAM_DESCRIPTION);
-//        int mass = parseInt(request, MealField.PARAM_MASS);
-//        int proteins = parseInt(request, MealField.PARAM_PROTEINS);
-//        int fats = parseInt(request, MealField.PARAM_FATS);
-//        int carbohydrates = parseInt(request, MealField.PARAM_CARBOHYDRATES);
-//        int calories = parseInt(request, MealField.PARAM_CALORIES);
-//
-//        return createMeal(id, user, dateTime, mass, description, proteins, fats, carbohydrates, calories);
-//    }
 }

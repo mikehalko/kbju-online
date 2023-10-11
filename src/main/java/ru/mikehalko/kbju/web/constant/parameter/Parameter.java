@@ -1,6 +1,6 @@
 package ru.mikehalko.kbju.web.constant.parameter;
 
-import ru.mikehalko.kbju.util.web.exception.NotMatchParameterException;
+import ru.mikehalko.kbju.web.exception.NotMatchParameterException;
 import ru.mikehalko.kbju.web.constant.Constant;
 
 import java.util.HashMap;

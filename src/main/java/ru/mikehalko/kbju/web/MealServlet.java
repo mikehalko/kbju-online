@@ -17,16 +17,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.mikehalko.kbju.util.web.exception.BadParameterException;
-import ru.mikehalko.kbju.util.web.exception.NotExistParameterException;
-import ru.mikehalko.kbju.util.web.validation.MealValidator;
+import ru.mikehalko.kbju.web.exception.BadParameterException;
+import ru.mikehalko.kbju.web.exception.NotExistParameterException;
+import ru.mikehalko.kbju.web.validation.MealValidator;
 import ru.mikehalko.kbju.web.constant.parameter.Parameter;
 
 import java.io.IOException;
 import java.util.List;
 
-import static ru.mikehalko.kbju.util.web.WebUtil.*;
-import static ru.mikehalko.kbju.util.web.validation.ValidateParser.meal;
+import static ru.mikehalko.kbju.web.util.WebUtil.*;
+import static ru.mikehalko.kbju.web.validation.ValidateParser.meal;
 import static ru.mikehalko.kbju.web.constant.attribute.MealField.*;
 import static ru.mikehalko.kbju.web.constant.OtherConstant.*;
 import static ru.mikehalko.kbju.web.constant.parameter.Parameter.*;

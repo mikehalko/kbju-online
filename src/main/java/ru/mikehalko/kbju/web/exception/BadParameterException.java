@@ -1,4 +1,4 @@
-package ru.mikehalko.kbju.util.web.exception;
+package ru.mikehalko.kbju.web.exception;
 
 import ru.mikehalko.kbju.web.constant.Constant;
 

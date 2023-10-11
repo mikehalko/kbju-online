@@ -1,10 +1,9 @@
-package ru.mikehalko.kbju.util.web;
+package ru.mikehalko.kbju.web.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.mikehalko.kbju.util.web.exception.EmptyParameterException;
-import ru.mikehalko.kbju.util.web.exception.NotExistParameterException;
-import ru.mikehalko.kbju.web.MealServlet;
+import ru.mikehalko.kbju.web.exception.EmptyParameterException;
+import ru.mikehalko.kbju.web.exception.NotExistParameterException;
 import ru.mikehalko.kbju.web.constant.Constant;
 
 import javax.servlet.ServletException;

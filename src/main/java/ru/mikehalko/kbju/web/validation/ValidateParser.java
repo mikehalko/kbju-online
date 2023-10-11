@@ -1,13 +1,13 @@
-package ru.mikehalko.kbju.util.web.validation;
+package ru.mikehalko.kbju.web.validation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.model.meal.Meal;
 import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.model.user.UserCredential;
-import ru.mikehalko.kbju.util.web.RequestParameterParser;
-import ru.mikehalko.kbju.util.web.exception.EmptyParameterException;
-import ru.mikehalko.kbju.util.web.exception.NotExistParameterException;
+import ru.mikehalko.kbju.web.util.RequestParameterParser;
+import ru.mikehalko.kbju.web.exception.EmptyParameterException;
+import ru.mikehalko.kbju.web.exception.NotExistParameterException;
 import ru.mikehalko.kbju.web.constant.attribute.FieldAttribute;
 import ru.mikehalko.kbju.web.constant.attribute.MealField;
 import ru.mikehalko.kbju.web.constant.attribute.UserCredentialField;

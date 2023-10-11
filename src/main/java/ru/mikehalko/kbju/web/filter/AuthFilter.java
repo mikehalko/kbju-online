@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mikehalko.kbju.model.user.User;
 import ru.mikehalko.kbju.util.security.ServletSecurityUtil;
-import ru.mikehalko.kbju.util.web.WebUtil;
-import ru.mikehalko.kbju.util.web.exception.BadParameterException;
+import ru.mikehalko.kbju.web.util.WebUtil;
+import ru.mikehalko.kbju.web.exception.BadParameterException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpFilter;

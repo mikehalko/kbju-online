@@ -1,6 +1,6 @@
-package ru.mikehalko.kbju.util.web.validation;
+package ru.mikehalko.kbju.web.validation;
 
-import ru.mikehalko.kbju.util.web.validation.exception.WrongTypeEnumFieldException;
+import ru.mikehalko.kbju.web.validation.exception.WrongTypeEnumFieldException;
 import ru.mikehalko.kbju.web.constant.attribute.*;
 
 public class FailFields {

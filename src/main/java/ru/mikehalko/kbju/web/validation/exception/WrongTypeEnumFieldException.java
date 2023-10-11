@@ -1,4 +1,4 @@
-package ru.mikehalko.kbju.util.web.validation.exception;
+package ru.mikehalko.kbju.web.validation.exception;
 
 
 import ru.mikehalko.kbju.web.constant.attribute.Field;

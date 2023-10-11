@@ -1,7 +1,7 @@
-<%@ page import="ru.mikehalko.kbju.util.web.validation.UserValidator" %>
+<%@ page import="ru.mikehalko.kbju.web.validation.UserValidator" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserField.*" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.OtherConstant.*" %>
-<%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidator" %>
+<%@ page import="ru.mikehalko.kbju.web.validation.UserCredentialValidator" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialField.PARAM_PASSWORD_NEW" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialField.*" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -136,6 +136,7 @@
 <footer>
     <div>
         <a>defezis 2023</a>
+        <a href="https://github.com/mikehalko/kbju-online">github</a>
     </div>
 </footer>
 

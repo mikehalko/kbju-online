@@ -83,6 +83,7 @@
 <footer>
     <div>
         <a>defezis 2023</a>
+        <a href="https://github.com/mikehalko/kbju-online">github</a>
     </div>
 </footer>
 

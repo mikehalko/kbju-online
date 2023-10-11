@@ -1,10 +1,10 @@
-<%@ page import="ru.mikehalko.kbju.util.web.validation.UserValidator" %>
+<%@ page import="ru.mikehalko.kbju.web.validation.UserValidator" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserCredentialField.*" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.attribute.UserField.*" %>
 <%@ page import="static ru.mikehalko.kbju.web.constant.OtherConstant.*" %>
-<%@ page import="ru.mikehalko.kbju.util.web.validation.UserCredentialValidator" %>
+<%@ page import="ru.mikehalko.kbju.web.validation.UserCredentialValidator" %>
 <%@ page import="ru.mikehalko.kbju.model.user.User" %>
-<%@ page import="ru.mikehalko.kbju.util.web.WebUtil" %>
+<%@ page import="ru.mikehalko.kbju.web.util.WebUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -132,6 +132,7 @@
 <footer>
     <div>
         <a>defezis 2023</a>
+        <a href="https://github.com/mikehalko/kbju-online">github</a>
     </div>
 </footer>
 
