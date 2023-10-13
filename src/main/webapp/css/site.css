@@ -170,6 +170,11 @@ footer {
 footer div {
     color: rgba(186, 186, 187, 0.68);
     font-family: 'Fira Code Light', monospace;
-    font-size:50%;
-    padding-top: 1%;
+    font-size:120%;
+    padding-top: 1.5%;
+}
+
+footer .link {
+    color: rgba(90, 147, 91, 0.88);
+    background: rgba(60, 63, 65, 0.74);
 }

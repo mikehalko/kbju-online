@@ -104,8 +104,8 @@
 
 <footer>
     <div>
-        <a>defezis 2023</a>
-        <a href="https://github.com/mikehalko/kbju-online">github</a>
+        <a>defezis 2023</a> |
+        <a href="https://github.com/mikehalko/kbju-online"  class="link">code on github</a>
     </div>
 </footer>
 
